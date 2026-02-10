@@ -1,0 +1,21 @@
+keys:
+  - &laptop age1lfpdcqsgcsa294c0kypu6ny5syavfp9ls3cj8mf06awrf7237pssazlfan
+  - &ocr1 age1r46e0k2t89dpqf93vqerkatq9jevl8pj2lhv7d06axw5q3svs53sgy2da8
+  - &tiny1 age1nsc70q3w3qdscy2vrjy6ktrsnj3l3pjrgk9yt2j8c7mcmc0x65es79mm8h
+  - &tiny2 age1qvtyyp98sf4ncmdev0uf3mdes7t48epny7kn85d4k86awjzs8qxq5mkh9j
+  - &rp age1a6ssujp7yhqaxgehhana5f463axh3ksmytv7qa3y43z7wl28y3esv47mm6
+creation_rules:
+  - path_regex: clusters/ocr1/.*-secret\.yaml$
+    encrypted_regex: "^(data|stringData)$"
+    key_groups:
+      - age:
+          - *ocr1
+          - *tiny1
+          - *tiny2
+          - *laptop
+  - path_regex: clusters/rp/.*-secret\.yaml$
+    encrypted_regex: "^(data|stringData)$"
+    key_groups:
+      - age:
+          - *laptop
+          - *rp

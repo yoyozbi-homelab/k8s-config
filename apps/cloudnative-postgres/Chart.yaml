@@ -1,0 +1,12 @@
+apiVersion: v2
+name: Cloud native postgres
+description: Helm chart to install cloud native postgres
+
+type: application
+version: 0.3.0 #Should be incremented
+appVersion: 1.28.0
+
+dependencies:
+  - name: cloudnative-pg
+    version: 0.27.0 
+    repository: https://cloudnative-pg.github.io/charts

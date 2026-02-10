@@ -1,0 +1,16 @@
+# https://kubernetes.io/docs/concepts/services-networking/service/
+apiVersion: v1
+kind: Service
+metadata:
+  name: bookmarks-service
+spec:
+  selector:
+    app: bookmarks
+  type: ClusterIP
+  ports:
+  - name: bookmarks-service
+    protocol: TCP
+    port: 80
+    targetPort: 8080
+---
+

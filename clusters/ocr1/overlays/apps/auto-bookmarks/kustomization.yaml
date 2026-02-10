@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: auto-bookmarks
+
+bases:
+  - ../../../../../apps/auto-bookmarks
+
+# Include cluster-specific secrets
+resources:
+  - secrets/bookmark-secrets.yaml
+
+# Cluster-specific configuration
+configMapGenerator:
+  - name: bookmarks-config
+    literals:
+      - ALLOWED_HOSTS=bookmarks.yohanzbinden.ch
+
+# Cluster-specific patches
+patches:
+  - target:
+      group: networking.k8s.io
+      version: v1
+      kind: Ingress
+      name: bookmarks-ingress
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: bookmarks.yohanzbinden.ch

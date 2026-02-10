@@ -1,0 +1,210 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homepage
+  labels:
+    app.kubernetes.io/name: homepage
+data:
+  kubernetes.yaml: |
+    mode: cluster
+  settings.yaml: |
+    fullWidth: true
+    providers:
+      longhorn:
+        url: https://longhorn.yohanzbinden.ch
+    layout:
+      Cluster Management:
+        style: row
+        columns: 4
+      Seedbox:
+        style: row
+        columns: 4
+
+  custom.css: ""
+  custom.js: ""
+  bookmarks.yaml: |
+    - Developer:
+        - Github:
+            - abbr: GH
+              href: https://github.com/
+  services.yaml: |
+    - Cluster Management:
+        - Cachix Deploy:
+            href: https://app.cachix.org/deploy/workspace/homelab-yohan
+            icon: https://app.cachix.org/cachix-logo-with-brand.59b76148.svg
+            widgets:
+              - type: customapi
+                url: https://app.cachix.org/api/v1/deploy/agent/homelab-yohan/ocr1
+                method: GET
+                headers:
+                  Authorization: Bearer {{HOMEPAGE_FILE_CACHIX}} 
+                mappings:
+                  - field: name
+                    label: name
+                  - field: lastDeployment.status
+                    label: Deployment
+              - type: customapi
+                url: https://app.cachix.org/api/v1/deploy/agent/homelab-yohan/tiny1
+                method: GET
+                headers:
+                  Authorization: Bearer {{HOMEPAGE_FILE_CACHIX}} 
+                mappings:
+                  - field: name
+                    label: name
+                  - field: lastDeployment.status
+                    label: Deployment
+              - type: customapi
+                url: https://app.cachix.org/api/v1/deploy/agent/homelab-yohan/tiny2
+                method: GET
+                headers:
+                  Authorization: Bearer {{HOMEPAGE_FILE_CACHIX}} 
+                mappings:
+                  - field: name
+                    label: name
+                  - field: lastDeployment.status
+                    label: Deployment
+              - type: customapi
+                url: https://app.cachix.org/api/v1/deploy/agent/homelab-yohan/rp
+                method: GET
+                headers:
+                  Authorization: Bearer {{HOMEPAGE_FILE_CACHIX}} 
+                mappings:
+                  - field: name
+                    label: name
+                  - field: lastDeployment.status
+                    label: Deployment
+
+        - Cloudflare:
+            href: https://one.dash.cloudflare.com
+            icon: cloudflare
+            widgets:
+              - type: cloudflared
+                accountid: {{HOMEPAGE_FILE_CLOUDFLARE_ACCOUNT}} 
+                tunnelid: 22565676-c520-45d4-9072-1a63f7c4a2ff
+                key: {{HOMEPAGE_FILE_CLOUDFLARE_KEY}}
+
+              - type: cloudflared
+                accountid: {{HOMEPAGE_FILE_CLOUDFLARE_ACCOUNT}}
+                tunnelid: dbf9b712-2b48-408b-b4ef-4bea71886522
+                key: {{HOMEPAGE_FILE_CLOUDFLARE_KEY}} 
+
+        - Traefik:
+            href: https://traefik-ocr1.yohanzbinden.ch/dashboard/
+            icon: traefik
+            widget:
+              type: traefik
+              url: https://traefik-ocr1.yohanzbinden.ch
+
+        - Argocd:
+            href: https://argocd.yohanzbinden.ch
+            icon: argo-cd
+            widget:
+              type: argocd
+              url: https://argocd.yohanzbinden.ch
+              key: {{HOMEPAGE_FILE_ARGOCD}}
+
+        - Netdata:
+            href: https://app.netdata.cloud
+            icon: netdata
+
+        - Longhorn:
+            href: https://longhorn.yohanzbinden.ch/
+            icon: longhorn
+
+        - Portainer:
+            href: https://portainer.yohanzbinden.ch/
+            icon: portainer
+            #widget:
+            #  type: portainer
+            #  url: https://portainer.yohanzbinden.ch
+            #  env: 1
+            #  key: ptr_x3N0QePIHgrI/FxIff4gWz/gXxey//gBJq3QN48v7v4=
+    - Productivity:
+        - Vikunja:
+            href: https://tasks.yohanzbinden.ch
+            icon: vikunja
+            widget:
+              type: vikunja
+              url: https://tasks.yohanzbinden.ch
+              key: {{HOMEPAGE_FILE_VIKUNJA}}
+              enableTaskList: true
+
+        - Bitwarden:
+            href: https://vault.yohanzbinden.ch
+            icon: bitwarden
+
+    - Seedbox:
+        - Jellyfin:
+            href: https://yohan-jellyfin.cloud.seedboxes.cc
+            icon: sh-jellyfin
+            widget:
+              type: jellyfin
+              url: https://yohan-jellyfin.cloud.seedboxes.cc
+              key: {{HOMEPAGE_FILE_JELLYFIN}} 
+              enableBlocks: true # optional, defaults to false
+              enableNowPlaying: true # optional, defaults to true
+              enableUser: true # optional, defaults to false
+              showEpisodeNumber: true # optional, defaults to false
+              expandOneStreamToTwoRows: false # optional, defaults to true
+
+        - Jellyseerr:
+            href: https://jellyseerr.yohanzbinden.ch
+            icon: sh-jellyseerr 
+            widget:
+              type: jellyseerr
+              url: https://jellyseerr.yohanzbinden.ch
+              key: {{HOMEPAGE_FILE_JELLYSEERR}}
+
+        - Radarr:
+            href: https://yohan-radarr.cloud.seedboxes.cc/
+            icon: sh-radarr
+            widget:
+              type: radarr
+              url: https://yohan-radarr.cloud.seedboxes.cc
+              key: {{HOMEPAGE_FILE_RADARR}}
+              enableQueue: true
+
+        - Sonarr:
+            href: https://yohan-sonarr.cloud.seedboxes.cc
+            icon: sh-sonarr
+            widget:
+              type: sonarr
+              url: https://yohan-sonarr.cloud.seedboxes.cc
+              key: {{HOMEPAGE_FILE_SONARR}}
+              enableQueue: true
+
+        - Qbittorrent:
+            href: https://yohan-qbittorrent.cloud.seedboxes.cc/
+            icon: qbittorrent
+            widget:
+              type: qbittorrent
+              url: https://yohan-qbittorrent.cloud.seedboxes.cc
+              username: {{HOMEPAGE_FILE_QBITTORRENT_USERNAME}}
+              password: {{HOMEPAGE_FILE_QBITTORRENT_PASSWORD}}
+
+  widgets.yaml: |
+    - kubernetes:
+        cluster:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+          label: "cluster"
+        nodes:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+    - longhorn:
+        # Show the expanded view
+        expanded: false
+        # Shows a node representing the aggregate values
+        total: true
+        # Shows the node names as labels
+        labels: true
+        # Show the nodes
+        nodes: false
+    - search:
+        provider: duckduckgo
+        target: _blank
+  docker.yaml: ""

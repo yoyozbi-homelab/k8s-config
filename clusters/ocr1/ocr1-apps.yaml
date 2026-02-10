@@ -1,0 +1,17 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ocr1-apps
+  namespace: flux-system
+spec:
+  interval: 10m
+  sourceRef:
+    kind: GitRepository
+    name: fleet-repo
+  path: ./clusters/ocr1/overlays/apps
+  prune: false
+  wait: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age

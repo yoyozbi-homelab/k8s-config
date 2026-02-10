@@ -1,0 +1,27 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: main-cluster
+spec:
+  instances: 1
+  size: 5Gi
+  managed:
+    roles:
+    - name: vaultwarden
+      ensure: present
+      connectionLimit: -1
+      inherit: true
+      comment: Vaultwarden role
+      login: true
+      superuser: false
+      passwordSecret:
+        name: main-cluster-vaultwarden-secret
+    - name: vikunja
+      ensure: present
+      connectionLimit: -1
+      inherit: true
+      comment: Vikunja role
+      login: true
+      superuser: false
+      passwordSecret:
+        name: main-cluster-vikunja-secret

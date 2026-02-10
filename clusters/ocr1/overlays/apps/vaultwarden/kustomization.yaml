@@ -1,0 +1,46 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: vaultwarden
+
+bases:
+  - ../../../../../apps/vaultwarden
+
+# Include cluster-specific secrets
+resources:
+  - secrets/admin-secret.yaml
+  - secrets/smtp-secret.yaml
+  - secrets/yubico-secret.yaml
+  - secrets/database-url-secret.yaml
+
+# Cluster-specific configuration
+configMapGenerator:
+  - name: vaultwarden-config
+    behavior: merge
+    literals:
+      - DOMAIN=https://vault.yohanzbinden.ch
+      - SMTP_FROM=yohan@yohanzbinden.ch
+
+# Cluster-specific patches
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: vaultwarden
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: "256M"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/cpu
+        value: "200m"
+  - target:
+      group: networking.k8s.io
+      version: v1
+      kind: Ingress
+      name: vaultwarden-ingress
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: vault.yohanzbinden.ch

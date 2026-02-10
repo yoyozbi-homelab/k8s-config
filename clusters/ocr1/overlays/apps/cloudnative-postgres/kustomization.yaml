@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: cnpg-system
+
+bases:
+  - ../../../../../apps/cloudnative-postgres/
+
+resources:
+  - cluster.yaml
+
+  - vaultwarden.yaml
+  - secrets/vaultwarden-secret.yaml
+
+  - vikunja.yaml
+  - secrets/vikunja-secret.yaml

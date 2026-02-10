@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homepage
+  labels:
+    app.kubernetes.io/name: homepage
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: homepage
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: homepage
+    spec:
+      serviceAccountName: homepage
+      automountServiceAccountToken: true
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      containers:
+        - name: homepage
+          image: "ghcr.io/gethomepage/homepage:v1.8.0"
+          imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /api/widgets/kubernetes
+              port: 3000
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /api/widgets/kubernetes
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 3
+          env:
+            - name: HOMEPAGE_ALLOWED_HOSTS
+              value: "*" # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
+            - name: HOMEPAGE_FILE_ARGOCD
+              value: /run/secrets/argocd-api-key
+            - name: HOMEPAGE_FILE_CLOUDFLARE_ACCOUNT
+              value: /run/secrets/cloudflare-account-id
+            - name: HOMEPAGE_FILE_CLOUDFLARE_KEY
+              value: /run/secrets/cloudflare-api-key
+            - name: HOMEPAGE_FILE_CACHIX
+              value: /run/secrets/cachix-api-key
+            - name: HOMEPAGE_FILE_JELLYFIN
+              value: /run/secrets/jellyfin-api-key
+            - name: HOMEPAGE_FILE_JELLYSEERR
+              value: /run/secrets/jellyseerr-api-key
+            - name: HOMEPAGE_FILE_RADARR
+              value: /run/secrets/radarr-api-key
+            - name: HOMEPAGE_FILE_SONARR
+              value: /run/secrets/sonarr-api-key
+            - name: HOMEPAGE_FILE_QBITTORRENT_USERNAME
+              value: /run/secrets/qbittorrent-username
+            - name: HOMEPAGE_FILE_QBITTORRENT_PASSWORD
+              value: /run/secrets/qbittorrent-password
+            - name: HOMEPAGE_FILE_VIKUNJA
+              value: /run/secrets/vikunja-api-key
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /app/config/custom.js
+              name: homepage-config
+              subPath: custom.js
+            - mountPath: /app/config/custom.css
+              name: homepage-config
+              subPath: custom.css
+            - mountPath: /app/config/bookmarks.yaml
+              name: homepage-config
+              subPath: bookmarks.yaml
+            - mountPath: /app/config/docker.yaml
+              name: homepage-config
+              subPath: docker.yaml
+            - mountPath: /app/config/kubernetes.yaml
+              name: homepage-config
+              subPath: kubernetes.yaml
+            - mountPath: /app/config/services.yaml
+              name: homepage-config
+              subPath: services.yaml
+            - mountPath: /app/config/settings.yaml
+              name: homepage-config
+              subPath: settings.yaml
+            - mountPath: /app/config/widgets.yaml
+              name: homepage-config
+              subPath: widgets.yaml
+            - mountPath: /app/config/logs
+              name: logs
+            - mountPath: /run/secrets
+              name: secrets
+      volumes:
+        - name: homepage-config
+          configMap:
+            name: homepage
+        - name: logs
+          emptyDir: {}
+        - name: secrets
+          hostPath:
+            path: /run/secrets/homepage
+            type: Directory
