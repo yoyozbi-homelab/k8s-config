@@ -8,7 +8,7 @@ bases:
 
 # Include cluster-specific secrets
 resources:
-  - secrets/bookmark-secrets.yaml
+  - secrets/bookmark-secret.yaml
 
 # Cluster-specific configuration
 configMapGenerator:
