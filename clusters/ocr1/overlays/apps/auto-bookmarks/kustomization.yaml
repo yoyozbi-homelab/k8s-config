@@ -13,6 +13,7 @@ resources:
 # Cluster-specific configuration
 configMapGenerator:
   - name: bookmarks-config
+    behavior: merge
     literals:
       - ALLOWED_HOSTS=bookmarks.yohanzbinden.ch
 
