@@ -27,5 +27,5 @@ patches:
       - op: replace
         path: /spec/rules/0/host
         value: bookmarks.yohanzbinden.ch
-spec:
-  targetNamespace: auto-bookmarks
+
+targetNamespace: auto-bookmarks
