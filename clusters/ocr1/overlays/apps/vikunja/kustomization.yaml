@@ -3,16 +3,23 @@ kind: Kustomization
 
 namespace: vikunja
 
-helmCharts:
-  - name: vikunja
-    repo: https://schmitzis.github.io/helm-charts/
-    version: 1.0.0
-    releaseName: vikunja
-    valuesFile: values-merged.yaml
+bases:
+  - ../../../../../apps/vikunja/
 
-# Include cluster-specific secrets
 resources:
   - secrets/db-secret.yaml
+
+# Patch HelmChart to include overlay values
+patchesJson6902:
+  - target:
+      group: source.toolkit.fluxcd.io
+      version: v1
+      kind: HelmChart
+      name: vikunja
+    patch: |-
+      - op: add
+        path: /spec/valuesFiles/-
+        value: clusters/ocr1/overlays/apps/vikunja/values.yaml
 
 commonLabels:
   app.kubernetes.io/name: vikunja

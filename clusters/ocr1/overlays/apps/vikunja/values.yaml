@@ -1,0 +1,50 @@
+vikunja:
+  vikunja:
+    image:
+      repository: vikunja/vikunja
+      tag: 1.1.0
+    configMaps:
+      api-config:
+        enabled: true
+        data:
+          config.yml: |
+            service:
+              enableregistration: false
+            typesense:
+              # Typesense will only work if it is enabled below (typesense.enabled).
+              url: "http://{{ printf "%s-typesense" .Release.Name }}:8108"
+              apiKey: "TYPESENSE_API_KEY_PLACEHOLDER"
+    persistence:
+      data:
+        enabled: true
+        accessMode: ReadWriteMany
+        size: 3Gi
+        storageClass: longhorn
+
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: traefik
+        hosts:
+          - host: tasks.yohanzbinden.ch
+            paths:
+              - path: /
+    env:
+      VIKUNJA_DATABASE_TYPE: postgres
+      VIKUNJA_DATABASE_USER: vikunja
+      VIKUNJA_DATABASE_NAME: vikunja
+      VIKUNJA_DATABASE_PASSWORD: DATABASE_PASSWORD_PLACEHOLDER
+      VIKUNJA_DATABASE_HOST: main-cluster-rw.cnpg-system.svc.cluster.local
+      VIKUNJA_SERVICE_PUBLICURL: https://tasks.yohanzbinden.ch
+
+  typesense:
+    enabled: true
+    persistence:
+      data:
+        enabled: true
+        accessMode: ReadWriteMany
+        size: 1Gi
+        storageClass: longhorn
+
+  postgresql:
+    enabled: false

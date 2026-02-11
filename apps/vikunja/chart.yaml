@@ -1,0 +1,22 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: vikunja
+spec:
+  interval: 5m0s
+  url: https://schmitzis.github.io/helm-charts/
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: vikunja
+spec:
+  interval: 5m0s
+  chart: vikunja
+  reconcileStrategy: ChartVersion
+  sourceRef:
+    kind: HelmRepository
+    name: vikunja
+  version: '1.0.0'
+  valuesFiles:
+    - values.yaml

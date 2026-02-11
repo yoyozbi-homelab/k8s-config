@@ -1,15 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: default
+namespace: vikunja
 
-helmCharts:
-  - name: vikunja
-    repo: https://schmitzis.github.io/helm-charts/
-    version: 1.0.0
-    releaseName: vikunja
-    valuesFile: values.yaml
-
+resources:
+  - chart.yaml
 commonLabels:
   app.kubernetes.io/name: vikunja
   app.kubernetes.io/part-of: vikunja
