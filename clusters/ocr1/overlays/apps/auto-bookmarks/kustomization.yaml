@@ -12,7 +12,6 @@ resources:
 # Cluster-specific configuration
 configMapGenerator:
   - name: bookmarks-config
-    behavior: merge
     literals:
       - ALLOWED_HOSTS=bookmarks.yohanzbinden.ch
 
@@ -28,4 +27,4 @@ patches:
         path: /spec/rules/0/host
         value: bookmarks.yohanzbinden.ch
 
-targetNamespace: auto-bookmarks
+namespace: auto-bookmarks
