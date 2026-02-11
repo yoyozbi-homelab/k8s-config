@@ -10,7 +10,7 @@ resources:
   - secrets/db-secret.yaml
 
 # Patch HelmChart to include overlay values
-patchesJson6902:
+patches:
   - target:
       group: source.toolkit.fluxcd.io
       version: v1

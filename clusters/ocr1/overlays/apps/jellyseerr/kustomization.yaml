@@ -4,7 +4,6 @@ kind: Kustomization
 bases:
   - ../../../../../apps/jellyseerr
 
-# Override jellyseerr ingress host
 patches:
   - target:
       group: networking.k8s.io

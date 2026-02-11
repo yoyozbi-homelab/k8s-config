@@ -3,12 +3,8 @@ kind: Kustomization
 
 namespace: jellyseerr
 
-helmCharts:
-  - name: jellyseerr
-    repo: https://loeken.github.io/helm-charts
-    version: 2.7.3
-    releaseName: jellyseerr
-    valuesFile: values.yaml
+resources:
+  - chart.yaml
 
 commonLabels:
   app.kubernetes.io/name: jellyseerr
