@@ -42,9 +42,9 @@ patches:
           persistence:
             config:
               enabled: true
+              storageClass: longhorn
               size: 5Gi
-              accessModes:
-                - ReadWriteOnce
+              accessMode: ReadWriteOnce
 
 commonLabels:
   app.kubernetes.io/name: jellyseerr
