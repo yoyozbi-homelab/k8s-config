@@ -19,19 +19,7 @@ patches:
     patch: |-
       - op: replace
         path: /spec/values/persistence/data/enabled
-        value: true
-      - op: replace
-        path: /spec/values/persistence/data/type
-        value: persistentVolumeClaim
-      - op: add
-        path: /spec/values/persistence/data/accessMode
-        value: ReadWriteMany
-      - op: add
-        path: /spec/values/persistence/data/size
-        value: 3Gi
-      - op: add
-        path: /spec/values/persistence/data/storageClass
-        value: longhorn
+        value: false
       - op: replace
         path: /spec/values/ingress/main/enabled
         value: true
