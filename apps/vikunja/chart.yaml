@@ -6,18 +6,3 @@ spec:
   interval: 5m0s
   url: oci://ghcr.io/go-vikunja/helm-chart
   type: oci
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmChart
-metadata:
-  name: vikunja
-spec:
-  interval: 5m0s
-  chart: vikunja
-  reconcileStrategy: ChartVersion
-  sourceRef:
-    kind: HelmRepository
-    name: vikunja
-  version: '2.0.0'
-  valuesFiles:
-    - values.yaml

@@ -10,17 +10,51 @@ resources:
   - namespace.yaml
   - secrets/db-secret.yaml
 
-# Patch HelmChart to include overlay values
 patches:
   - target:
-      group: source.toolkit.fluxcd.io
-      version: v1
-      kind: HelmChart
+      group: helm.toolkit.fluxcd.io
+      version: v2
+      kind: HelmRelease
       name: vikunja
     patch: |-
-      - op: add
-        path: /spec/valuesFiles/-
-        value: values.yaml
+      - op: replace
+        path: /spec/values
+        value:
+          vikunja:
+            persistence:
+              data:
+                enabled: true
+                accessMode: ReadWriteMany
+                size: 3Gi
+                storageClass: longhorn
+              database:
+                enabled: false
+            configMaps:
+              config:
+                enabled: true
+                data:
+                  config.yml: |
+                    service:
+                      enableregistration: false
+                      publicurl: "https://tasks.yohanzbinden.ch"
+            ingress:
+              main:
+                enabled: true
+                ingressClassName: traefik
+                hosts:
+                  - host: tasks.yohanzbinden.ch
+                    paths:
+                      - path: /
+            env:
+              VIKUNJA_DATABASE_TYPE: postgres
+              VIKUNJA_DATABASE_USER: vikunja
+              VIKUNJA_DATABASE_NAME: vikunja
+              VIKUNJA_DATABASE_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: vikunja-db-secret
+                    key: password
+              VIKUNJA_DATABASE_HOST: main-cluster-rw.cnpg-system.svc.cluster.local
 
 commonLabels:
   app.kubernetes.io/name: vikunja

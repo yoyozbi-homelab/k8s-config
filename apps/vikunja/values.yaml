@@ -1,8 +1,0 @@
-vikunja:
-  persistence:
-    data:
-      enabled: true
-      storageClass: longhorn
-    database:
-      enabled: false
-

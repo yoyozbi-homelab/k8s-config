@@ -5,18 +5,3 @@ metadata:
 spec:
   interval: 5m0s
   url: https://loeken.github.io/helm-charts
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmChart
-metadata:
-  name: jellyseerr
-spec:
-  interval: 5m0s
-  chart: jellyseerr
-  reconcileStrategy: ChartVersion
-  sourceRef:
-    kind: HelmRepository
-    name: jellyseerr
-  version: '2.7.3'
-  valuesFiles:
-    - values.yaml

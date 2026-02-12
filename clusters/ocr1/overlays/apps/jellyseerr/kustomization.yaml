@@ -11,12 +11,41 @@ resources:
 
 patches:
   - target:
-      group: source.toolkit.fluxcd.io
-      version: v1
-      kind: HelmChart
+      group: helm.toolkit.fluxcd.io
+      version: v2
+      kind: HelmRelease
       name: jellyseerr
     patch: |-
-      - op: add
-        path: /spec/valuesFiles/-
-        value: values.yaml
+      - op: replace
+        path: /spec/values
+        value:
+          replicaCount: 1
+          image:
+            repository: ghcr.io/fallenbagel/jellyseerr
+            pullPolicy: IfNotPresent
+          service:
+            main:
+              enabled: true
+              type: ClusterIP
+              ports:
+                http:
+                  port: 80
+                  targetPort: 5055
+          ingress:
+            main:
+              enabled: true
+              hosts:
+                - host: jellyseerr.yohanzbinden.ch
+                  paths:
+                    - path: /
+                      pathType: Prefix
+          persistence:
+            config:
+              enabled: true
+              size: 5Gi
+              accessModes:
+                - ReadWriteOnce
 
+commonLabels:
+  app.kubernetes.io/name: jellyseerr
+  app.kubernetes.io/part-of: jellyseerr

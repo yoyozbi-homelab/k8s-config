@@ -3,3 +3,8 @@ kind: Kustomization
 
 resources:
   - chart.yaml
+  - release.yaml
+
+commonLabels:
+  app.kubernetes.io/name: vikunja
+  app.kubernetes.io/part-of: vikunja
