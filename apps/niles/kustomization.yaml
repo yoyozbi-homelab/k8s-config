@@ -6,7 +6,3 @@ resources:
   - deployments/lol-deployment.yml
   - deployments/rl-deployment.yml
   - deployments/smash-deployment.yaml
-
-commonLabels:
-  app.kubernetes.io/name: niles
-  app.kubernetes.io/part-of: niles

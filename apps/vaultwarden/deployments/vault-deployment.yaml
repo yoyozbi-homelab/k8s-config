@@ -23,16 +23,6 @@ spec:
             - configMapRef:
                 name: vaultwarden-config
           env:
-            - name: DOMAIN
-              valueFrom:
-                configMapKeyRef:
-                  name: vaultwarden-config
-                  key: DOMAIN
-            - name: SMTP_FROM
-              valueFrom:
-                configMapKeyRef:
-                  name: vaultwarden-config
-                  key: SMTP_FROM
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:

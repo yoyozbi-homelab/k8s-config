@@ -12,7 +12,3 @@ configMapGenerator:
     literals:
       - SIGNUPS_ALLOWED=false
       - ROCKET_IPHEADER=CF-Connecting-IP
-
-commonLabels:
-  app.kubernetes.io/name: vaultwarden
-  app.kubernetes.io/part-of: vaultwarden
