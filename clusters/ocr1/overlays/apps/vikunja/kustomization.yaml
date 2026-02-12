@@ -22,7 +22,7 @@ patches:
         value: true
       - op: replace
         path: /spec/values/persistence/data/type
-        value: pvc
+        value: persistentVolumeClaim
       - op: add
         path: /spec/values/persistence/data/accessMode
         value: ReadWriteMany
