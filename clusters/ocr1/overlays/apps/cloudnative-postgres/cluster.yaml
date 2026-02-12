@@ -4,7 +4,8 @@ metadata:
   name: main-cluster
 spec:
   instances: 1
-  size: 5Gi
+  storage:
+    size: 5Gi
   managed:
     roles:
     - name: vaultwarden
