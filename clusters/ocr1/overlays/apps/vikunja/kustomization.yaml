@@ -18,41 +18,54 @@ patches:
       name: vikunja
     patch: |-
       - op: replace
-        path: /spec/values
+        path: /spec/values/persistence/data/enabled
+        value: true
+      - op: replace
+        path: /spec/values/persistence/data/type
+        value: pvc
+      - op: add
+        path: /spec/values/persistence/data/accessMode
+        value: ReadWriteMany
+      - op: add
+        path: /spec/values/persistence/data/size
+        value: 3Gi
+      - op: add
+        path: /spec/values/persistence/data/storageClass
+        value: longhorn
+      - op: replace
+        path: /spec/values/ingress/main/enabled
+        value: true
+      - op: add
+        path: /spec/values/ingress/main/hosts
         value:
-          vikunja:
-            persistence:
-              data:
-                enabled: true
-                accessMode: ReadWriteMany
-                size: 3Gi
-                storageClass: longhorn
-              database:
-                enabled: false
-            configMaps:
-              config:
-                enabled: false
-            ingress:
-              main:
-                enabled: true
-                ingressClassName: traefik
-                hosts:
-                  - host: tasks.yohanzbinden.ch
-                    paths:
-                      - path: /
-            env:
-              VIKUNJA_SERVICE_ENABLEREGISTRATION: false
-              VIKUNJA_SERVICE_PUBLICURL: https://tasks.yohanzbinden.ch
-              VIKUNJA_DATABASE_TYPE: postgres
-              VIKUNJA_DATABASE_USER: vikunja
-              VIKUNJA_DATABASE_NAME: vikunja
-              VIKUNJA_DATABASE_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: vikunja-db-secret
-                    key: password
-              VIKUNJA_DATABASE_HOST: main-cluster-rw.cnpg-system.svc.cluster.local
+          - host: tasks.yohanzbinden.ch
+            paths:
+              - path: /
+                pathType: Prefix
+      - op: add
+        path: /spec/values/controllers/main/containers/main/env
+        value:
+          VIKUNJA_SERVICE_ENABLEREGISTRATION: "false"
+          VIKUNJA_SERVICE_PUBLICURL: https://tasks.yohanzbinden.ch
+          VIKUNJA_DATABASE_TYPE: postgres
+          VIKUNJA_DATABASE_USER: vikunja
+          VIKUNJA_DATABASE_NAME: vikunja
+          VIKUNJA_DATABASE_HOST: main-cluster-rw.cnpg-system.svc.cluster.local
+          VIKUNJA_DATABASE_PASSWORD:
+            valueFrom:
+              secretKeyRef:
+                name: vikunja-db-secret
+                key: password
+          VIKUNJA_TYPESENSE_ENABLED: "true"
+          VIKUNJA_TYPESENSE_HOST: typesense.search.svc.cluster.local
+          VIKUNJA_TYPESENSE_PORT: "8108"
+          VIKUNJA_TYPESENSE_APIKEY:
+            valueFrom:
+              secretKeyRef:
+                name: vikunja-db-secret
+                key: typesense-key
 
 commonLabels:
   app.kubernetes.io/name: vikunja
   app.kubernetes.io/part-of: vikunja
+

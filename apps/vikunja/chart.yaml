@@ -1,8 +1,0 @@
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: vikunja
-spec:
-  interval: 5m0s
-  url: oci://ghcr.io/go-vikunja/helm-chart
-  type: oci
