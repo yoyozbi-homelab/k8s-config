@@ -6,11 +6,12 @@ bases:
 
 patches:
   - target:
-      group: networking.k8s.io
+      group: source.toolkit.fluxcd.io
       version: v1
-      kind: Ingress
+      kind: HelmChart
       name: jellyseerr
     patch: |-
-      - op: replace
-        path: /spec/rules/0/host
-        value: jellyseerr.yohanzbinden.ch
+      - op: add
+        path: /spec/valuesFiles/-
+        value: clusters/ocr1/overlays/apps/jellyseerr/values.yaml
+

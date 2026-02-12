@@ -1,0 +1,15 @@
+ingress:
+  main:
+    enabled: true
+    hosts:
+      - host: jellyseerr.yohanzbinden.ch
+        paths:
+          - path: /
+            pathType: Prefix
+
+persistence:
+  config:
+    enabled: true
+    size: 5Gi
+    accessModes:
+      - ReadWriteOnce
