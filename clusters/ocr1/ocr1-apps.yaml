@@ -7,7 +7,7 @@ spec:
   interval: 10m
   sourceRef:
     kind: GitRepository
-    name: fleet-repo
+    name: flux-system 
   path: ./clusters/ocr1/overlays/apps
   prune: false
   wait: true
