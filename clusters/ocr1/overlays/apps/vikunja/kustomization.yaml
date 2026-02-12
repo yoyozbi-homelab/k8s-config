@@ -20,7 +20,7 @@ patches:
     patch: |-
       - op: add
         path: /spec/valuesFiles/-
-        value: clusters/ocr1/overlays/apps/vikunja/values.yaml
+        value: values.yaml
 
 commonLabels:
   app.kubernetes.io/name: vikunja

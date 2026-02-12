@@ -18,5 +18,5 @@ patches:
     patch: |-
       - op: add
         path: /spec/valuesFiles/-
-        value: clusters/ocr1/overlays/apps/jellyseerr/values.yaml
+        value: values.yaml
 
