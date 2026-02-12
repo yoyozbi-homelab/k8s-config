@@ -6,8 +6,8 @@ namespace: niles
 bases:
   - ../../../../../apps/niles
 
-# Include cluster-specific secrets
 resources:
+  - namespace.yaml
   - secrets/calendar-secret.yaml
   - secrets/cs-config-secret.yaml
   - secrets/lol-config-secret.yaml

@@ -7,6 +7,7 @@ bases:
   - ../../../../../apps/cloudnative-postgres/
 
 resources:
+  - namespace.yaml
   - cluster.yaml
 
   - vaultwarden.yaml

@@ -8,6 +8,7 @@ bases:
 
 # Include cluster-specific secrets
 resources:
+  - namespace.yaml
   - secrets/admin-secret.yaml
   - secrets/smtp-secret.yaml
   - secrets/yubico-secret.yaml

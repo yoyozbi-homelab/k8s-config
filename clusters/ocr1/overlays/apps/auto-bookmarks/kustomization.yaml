@@ -1,12 +1,14 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: auto-bookmarks
 
 bases:
   - ../../../../../apps/auto-bookmarks
 
 # Include cluster-specific secrets
 resources:
+  - namespace.yaml
   - secrets/bookmark-secret.yaml
 
 # Cluster-specific configuration
