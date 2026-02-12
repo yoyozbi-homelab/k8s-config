@@ -31,12 +31,7 @@ patches:
                 enabled: false
             configMaps:
               config:
-                enabled: true
-                data:
-                  config.yml: |
-                    service:
-                      enableregistration: false
-                      publicurl: "https://tasks.yohanzbinden.ch"
+                enabled: false
             ingress:
               main:
                 enabled: true
@@ -46,6 +41,8 @@ patches:
                     paths:
                       - path: /
             env:
+              VIKUNJA_SERVICE_ENABLEREGISTRATION: false
+              VIKUNJA_SERVICE_PUBLICURL: https://tasks.yohanzbinden.ch
               VIKUNJA_DATABASE_TYPE: postgres
               VIKUNJA_DATABASE_USER: vikunja
               VIKUNJA_DATABASE_NAME: vikunja
