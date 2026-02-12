@@ -20,9 +20,6 @@ patches:
         path: /spec/values
         value:
           replicaCount: 1
-          image:
-            repository: ghcr.io/fallenbagel/jellyseerr
-            pullPolicy: IfNotPresent
           service:
             main:
               enabled: true
