@@ -15,3 +15,6 @@ resources:
 
   - vikunja.yaml
   - secrets/vikunja-secret.yaml
+
+  - jellyseerr.yaml
+  - secrets/jellyseerr-secret.yaml
