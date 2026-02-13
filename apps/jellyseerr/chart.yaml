@@ -1,7 +1,0 @@
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: jellyseerr 
-spec:
-  interval: 5m0s
-  url: https://loeken.github.io/helm-charts

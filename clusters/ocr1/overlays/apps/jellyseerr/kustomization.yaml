@@ -17,31 +17,19 @@ patches:
       name: jellyseerr
     patch: |-
       - op: replace
-        path: /spec/values
+        path: /spec/values/ingress/main/enabled
+        value: true
+      - op: add
+        path: /spec/values/ingress/main/hosts
         value:
-          replicaCount: 1
-          service:
-            main:
-              enabled: true
-              type: ClusterIP
-              ports:
-                http:
-                  port: 80
-                  targetPort: 5055
-          ingress:
-            main:
-              enabled: true
-              hosts:
-                - host: jellyseerr.yohanzbinden.ch
-                  paths:
-                    - path: /
-                      pathType: Prefix
-          persistence:
-            config:
-              enabled: true
-              storageClass: longhorn
-              size: 5Gi
-              accessMode: ReadWriteOnce
+          - host: jellyseerr.yohanzbinden.ch
+            paths:
+              - path: /
+                pathType: Prefix
+      - op: replace
+        path: /spec/vaules/persistence/settings/name
+        value: jellyseerr-settings
+
 
 commonLabels:
   app.kubernetes.io/name: jellyseerr
