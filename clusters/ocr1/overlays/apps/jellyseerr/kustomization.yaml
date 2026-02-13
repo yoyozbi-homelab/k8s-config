@@ -28,9 +28,9 @@ patches:
             paths:
               - path: /
                 pathType: Prefix
-      - op: replace
-        path: /spec/values/persistence/settings/name
-        value: jellyseerr-settings
+      # - op: replace
+      #   path: /spec/values/persistence/settings/name
+      #   value: jellyseerr-settings
       - op: add
         path: /spec/values/controllers/main/containers/main/env
         value:
