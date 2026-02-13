@@ -26,3 +26,12 @@ spec:
       superuser: false
       passwordSecret:
         name: main-cluster-vikunja-secret
+    - name: jellyseerr
+      ensure: present
+      connectionLimit: -1
+      inherit: true
+      comment: jellyseerr role
+      login: true
+      superuser: false
+      passwordSecret:
+        name: main-cluster-jellyseerr-secret
