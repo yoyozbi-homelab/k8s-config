@@ -27,7 +27,7 @@ patches:
               - path: /
                 pathType: Prefix
       - op: replace
-        path: /spec/vaules/persistence/settings/name
+        path: /spec/values/persistence/settings/name
         value: jellyseerr-settings
 
 
