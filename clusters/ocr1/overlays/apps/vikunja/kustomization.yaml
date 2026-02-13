@@ -44,14 +44,7 @@ patches:
               secretKeyRef:
                 name: vikunja-db-secret
                 key: password
-          VIKUNJA_TYPESENSE_ENABLED: "true"
-          VIKUNJA_TYPESENSE_HOST: typesense.search.svc.cluster.local
-          VIKUNJA_TYPESENSE_PORT: "8108"
-          VIKUNJA_TYPESENSE_APIKEY:
-            valueFrom:
-              secretKeyRef:
-                name: vikunja-db-secret
-                key: typesense-key
+          VIKUNJA_TYPESENSE_ENABLED: "false"
 
 commonLabels:
   app.kubernetes.io/name: vikunja
