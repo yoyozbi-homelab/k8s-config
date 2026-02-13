@@ -7,25 +7,6 @@
   "schedule": [
     "before 3am on Monday"
   ],
-  "helm": {
-    "enabled": true
-  },
-  "kubernetes": {
-    "enabled": true
-  },
-  "docker": {
-    "enabled": true,
-    "automerge": false
-  },
-  "ignoreDeps": [],
-  "ignorePaths": [
-    "node_modules/**",
-    ".venv/**",
-    "venv/**"
-  ],
-  "flux": {
-    "enabled": true
-  },
   "semanticCommits": "enabled",
   "commitMessagePrefix": "chore(deps): ",
   "commitMessageAction": "update",
@@ -33,6 +14,12 @@
   "prConcurrentLimit": 10,
   "prCreation": "not-pending",
   "minimumReleaseAge": "3 days",
+  "labels": ["dependencies", "renovate"],
+  "ignorePaths": [
+    "node_modules/**",
+    ".venv/**",
+    "venv/**"
+  ],
   "packageRules": [
     {
       "description": "Automatically rebase Renovate's PRs when there are conflicts",
@@ -44,20 +31,6 @@
       "matchUpdateTypes": ["minor", "patch", "digest"],
       "groupName": "non-major updates",
       "groupSlug": "non-major-updates"
-    },
-    {
-      "description": "Require approval for major updates",
-      "matchUpdateTypes": ["major"],
-      "reviewers": ["@yohan"],
-      "assignees": ["@yohan"]
     }
-  ],
-  "vulnerabilityAlerts": {
-    "labels": ["security"]
-  },
-  "labels": ["dependencies", "renovate"],
-  "postUpdateOptions": [
-    "gomodTidy",
-    "yarnDedupeHighest"
   ]
 }
