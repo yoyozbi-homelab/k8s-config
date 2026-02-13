@@ -8,6 +8,8 @@ bases:
 
 resources:
   - namespace.yaml
+  - database-secret.yaml
+  - settings-secret.yaml 
 
 patches:
   - target:
