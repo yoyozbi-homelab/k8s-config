@@ -19,7 +19,7 @@ patches:
     patch: |-
       - op: replace
         path: /spec/values/persistence/data/enabled
-        value: false
+        value: true
       - op: replace
         path: /spec/values/ingress/main/enabled
         value: true
