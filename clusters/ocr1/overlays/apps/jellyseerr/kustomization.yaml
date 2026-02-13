@@ -35,7 +35,7 @@ patches:
           DB_TYPE: postgres
           DB_HOST: main-cluster-rw.cnpg-system.svc.cluster.local
           DB_USER: jellyseerr
-          DB_PASSWORD:
+          DB_PASS:
             valueFrom:
               secretKeyRef:
                 name: jellyseerr-database-secret
