@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base",
+    "config:recommended",
     "schedule:weekly"
   ],
   "schedule": [
@@ -14,7 +14,10 @@
   "prConcurrentLimit": 10,
   "prCreation": "not-pending",
   "minimumReleaseAge": "3 days",
-  "labels": ["dependencies", "renovate"],
+  "labels": [
+    "dependencies",
+    "renovate"
+  ],
   "ignorePaths": [
     "node_modules/**",
     ".venv/**",
@@ -47,12 +50,21 @@
   "packageRules": [
     {
       "description": "Automatically rebase Renovate's PRs when there are conflicts",
-      "matchUpdateTypes": ["minor", "patch", "digest", "lockFileMaintenance"],
-      "rebaseStalePrs": true
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest",
+        "lockFileMaintenance"
+      ],
+      "rebaseWhen": "behind-base-branch"
     },
     {
       "description": "Group all non-major updates",
-      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest"
+      ],
       "groupName": "non-major updates",
       "groupSlug": "non-major-updates"
     }
