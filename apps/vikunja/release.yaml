@@ -60,7 +60,7 @@ spec:
     
     persistence:
       data:
-        enabled: false
+        enabled: true
         type: emptyDir
         globalMounts:
           - path: /app/vikunja/files
