@@ -29,6 +29,19 @@ patches:
       - op: replace
         path: /spec/values/persistence/settings/name
         value: jellyseerr-settings
+      - op: add
+        path: /spec/values/controllers/main/containers/main/env
+        value:
+          DB_TYPE: postgres
+          DB_HOST: main-cluster-rw.cnpg-system.svc.cluster.local
+          DB_USER: jellyseerr
+          DB_PASSWORD:
+            valueFrom:
+              secretKeyRef:
+                name: jellyseerr-database-secret
+                key: password
+          DB_NAME: jellyseerr
+
 
 
 commonLabels:
