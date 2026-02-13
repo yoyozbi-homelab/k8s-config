@@ -127,6 +127,7 @@ data:
               type: vikunja
               url: https://tasks.yohanzbinden.ch
               key: {{HOMEPAGE_FILE_VIKUNJA}}
+              version: 2
               enableTaskList: true
 
         - Bitwarden:
