@@ -19,8 +19,8 @@ spec:
         containers:
           main:
             image:
-              repository: ghcr.io/seerr-team/seerr
-              tag: v3.0.1
+              repository: ghcr.io/fallenbagel/jellyseerr
+              tag: 2.7.1
               pullPolicy: IfNotPresent
             ports:
               - name: http
