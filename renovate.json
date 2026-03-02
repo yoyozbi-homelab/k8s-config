@@ -30,8 +30,8 @@
   "helm-values": {
     "enabled": true,
     "managerFilePatterns": [
-      "apps/.*\\.ya?ml$",
-      "clusters/.*\\.ya?ml$"
+      "/^apps/.+\\.ya?ml$/",
+      "/^clusters/.+\\.ya?ml$/"
     ]
   },
   "helmv3": {
@@ -68,14 +68,6 @@
       ],
       "groupName": "non-major updates",
       "groupSlug": "non-major-updates"
-    },
-    {
-      "description": "Group helm-values image updates",
-      "matchManagers": [
-        "helm-values"
-      ],
-      "groupName": "helm-values updates",
-      "enabled": true
     }
   ]
 }
