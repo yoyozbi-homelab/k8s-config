@@ -23,6 +23,15 @@
     ".venv/**",
     "venv/**"
   ],
+  "helm": {
+    "enabled": true
+  },
+  "helmv3": {
+    "enabled": true
+  },
+  "kubernetes": {
+    "enabled": true
+  },
   "packageRules": [
     {
       "description": "Automatically rebase Renovate's PRs when there are conflicts",
