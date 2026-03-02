@@ -23,11 +23,18 @@
     ".venv/**",
     "venv/**"
   ],
-  "helm": {
-    "enabled": true
-  },
   "helmv3": {
     "enabled": true
+  },
+  "helm-values": {
+    "enabled": true
+  },
+  "flux": {
+    "enabled": true,
+    "managerFilePatterns": [
+      "/^apps/.+\\.ya?ml$/",
+      "/^clusters/.+\\.ya?ml$/"
+    ]
   },
   "kubernetes": {
     "enabled": true,
