@@ -20,25 +20,25 @@
     ".venv/**",
     "venv/**"
   ],
-  "helmv3": {
-    "enabled": true,
+  "flux": {
     "managerFilePatterns": [
       "/^apps/.+\\.ya?ml$/",
       "/^clusters/.+\\.ya?ml$/"
     ]
   },
   "helm-values": {
-    "enabled": true
+    "managerFilePatterns": [
+      "/^apps/.+\\.ya?ml$/",
+      "/^clusters/.+\\.ya?ml$/"
+    ]
   },
-  "flux": {
-    "enabled": true,
+  "helmv3": {
     "managerFilePatterns": [
       "/^apps/.+\\.ya?ml$/",
       "/^clusters/.+\\.ya?ml$/"
     ]
   },
   "kubernetes": {
-    "enabled": true,
     "managerFilePatterns": [
       "/^apps/.+\\.ya?ml$/",
       "/^clusters/.+\\.ya?ml$/"
