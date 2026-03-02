@@ -95,14 +95,6 @@ data:
               type: traefik
               url: https://traefik-ocr1.yohanzbinden.ch
 
-        - Argocd:
-            href: https://argocd.yohanzbinden.ch
-            icon: argo-cd
-            widget:
-              type: argocd
-              url: https://argocd.yohanzbinden.ch
-              key: {{HOMEPAGE_FILE_ARGOCD}}
-
         - Netdata:
             href: https://app.netdata.cloud
             icon: netdata
@@ -110,6 +102,10 @@ data:
         - Longhorn:
             href: https://longhorn.yohanzbinden.ch/
             icon: longhorn
+
+        - Dozzle:
+            href: https://dozzle.yohanzbinden.ch/
+            icon: dozzle
 
         - Portainer:
             href: https://portainer.yohanzbinden.ch/
