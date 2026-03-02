@@ -9,3 +9,5 @@ resources:
   - cloudnative-postgres
   - vaultwarden
   - vikunja
+  - dozzle
+  - metrics-server
