@@ -4,9 +4,6 @@
     "config:recommended",
     "schedule:weekly"
   ],
-  "schedule": [
-    "before 3am on Monday"
-  ],
   "semanticCommits": "enabled",
   "commitMessagePrefix": "chore(deps): ",
   "commitMessageAction": "update",
@@ -24,7 +21,11 @@
     "venv/**"
   ],
   "helmv3": {
-    "enabled": true
+    "enabled": true,
+    "managerFilePatterns": [
+      "/^apps/.+\\.ya?ml$/",
+      "/^clusters/.+\\.ya?ml$/"
+    ]
   },
   "helm-values": {
     "enabled": true
