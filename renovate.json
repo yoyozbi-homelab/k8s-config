@@ -23,30 +23,6 @@
     ".venv/**",
     "venv/**"
   ],
-  "flux": {
-    "managerFilePatterns": [
-      "/^apps/.+\\.ya?ml$/",
-      "/^clusters/.+\\.ya?ml$/"
-    ]
-  },
-  "helm-values": {
-    "managerFilePatterns": [
-      "/^apps/.+\\.ya?ml$/",
-      "/^clusters/.+\\.ya?ml$/"
-    ]
-  },
-  "helmv3": {
-    "managerFilePatterns": [
-      "/^apps/.+\\.ya?ml$/",
-      "/^clusters/.+\\.ya?ml$/"
-    ]
-  },
-  "kubernetes": {
-    "managerFilePatterns": [
-      "/^apps/.+\\.ya?ml$/",
-      "/^clusters/.+\\.ya?ml$/"
-    ]
-  },
   "packageRules": [
     {
       "description": "Automatically rebase Renovate's PRs when there are conflicts",
