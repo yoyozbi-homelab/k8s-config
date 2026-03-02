@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cnpg-backup-script
+data:
+  backup.sh: |
+    #!/bin/bash
+    
+    trap 'send_notification "❌ CNPG Backup Failed\n\nUnexpected error occurred" $NTFY_TOPIC; exit 1' ERR
+    
+    send_notification() {
+      local message="$1"
+      local topic="$2"
+      
+      if ! curl -s -X POST -d "$message" "$topic" > /dev/null 2>&1; then
+        echo "[$(date)] ERROR: Failed to send notification to ntfy.sh"
+        exit 1
+      fi
+    }
+    
+    BACKUP_FILE="/tmp/cnpg-main-$(date +%Y%m%d-%H%M%S).sql.gz"
+    WEBDAV_URL="${WEBDAV_URL%/}"
+    NOTIFY_URL="$NTFY_TOPIC"
+    
+    echo "[$(date)] Starting CNPG main database backup..."
+    
+    # Dump database from main-cluster
+    if ! pg_dump -h main-cluster-rw.cnpg-system.svc.cluster.local -U postgres postgres | gzip > "$BACKUP_FILE"; then
+      echo "[$(date)] ERROR: Failed to dump database"
+      send_notification "❌ CNPG Backup Failed\n\nFailed to dump database" "$NOTIFY_URL"
+      exit 1
+    fi
+    
+    BACKUP_SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
+    echo "[$(date)] Backup created: $BACKUP_FILE ($BACKUP_SIZE)"
+    
+    # Upload to WebDAV using rclone
+    if ! rclone copy "$BACKUP_FILE" ":webdav:/" --config /etc/rclone/rclone.conf; then
+      echo "[$(date)] ERROR: Failed to upload backup to WebDAV"
+      send_notification "❌ CNPG Backup Failed\n\nFailed to upload to WebDAV" "$NOTIFY_URL"
+      exit 1
+    fi
+    
+    echo "[$(date)] Backup uploaded successfully"
+    send_notification "✅ CNPG Backup Success\n\nCluster: main-cluster\nSize: $BACKUP_SIZE\nTime: $(date)" "$NOTIFY_URL"
+    
+    echo "[$(date)] Backup job completed successfully"
+    exit 0
+  
+  rclone.conf: |
+    [webdav]
+    type = webdav
+    url = $WEBDAV_URL
+    username = $WEBDAV_USERNAME
+    password = $WEBDAV_PASSWORD
+    vendor = other

@@ -1,0 +1,89 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cnpg-backup
+spec:
+  schedule: "0 2 * * *"  # Daily at 2am
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: cnpg-backup
+          restartPolicy: OnFailure
+          containers:
+          - name: backup
+            image: postgres:16-alpine
+            command: ["/bin/sh", "-c"]
+            args:
+            - |
+              apk add --no-cache curl rclone
+              chmod +x /scripts/backup.sh
+              /scripts/backup.sh
+              EXIT_CODE=$?
+              if [ $EXIT_CODE -ne 0 ]; then
+                curl -X POST -d "❌ CNPG Backup Failed\n\nJob exited with code: $EXIT_CODE" "$NTFY_TOPIC" 2>/dev/null || true
+              fi
+              exit $EXIT_CODE
+            env:
+            - name: WEBDAV_URL
+              valueFrom:
+                secretKeyRef:
+                  name: cnpg-backup-config
+                  key: webdav-url
+            - name: WEBDAV_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: cnpg-backup-config
+                  key: webdav-username
+            - name: WEBDAV_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cnpg-backup-config
+                  key: webdav-password
+            - name: NTFY_TOPIC
+              valueFrom:
+                secretKeyRef:
+                  name: cnpg-backup-config
+                  key: ntfy-topic
+            volumeMounts:
+            - name: backup-script
+              mountPath: /scripts
+            resources:
+              requests:
+                memory: "256Mi"
+                cpu: "100m"
+              limits:
+                memory: "512Mi"
+                cpu: "500m"
+          volumes:
+          - name: backup-script
+            configMap:
+              name: cnpg-backup-script
+              defaultMode: 0755
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cnpg-backup
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cnpg-backup
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/log"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cnpg-backup
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cnpg-backup
+subjects:
+- kind: ServiceAccount
+  name: cnpg-backup
+  namespace: cnpg-system

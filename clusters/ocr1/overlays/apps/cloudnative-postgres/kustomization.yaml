@@ -18,3 +18,7 @@ resources:
 
   - jellyseerr.yaml
   - secrets/jellyseerr-secret.yaml
+
+  - backup-secret.yaml
+  - backup-configmap.yaml
+  - backup-cronjob.yaml
