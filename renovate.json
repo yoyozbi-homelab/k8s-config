@@ -30,7 +30,11 @@
     "enabled": true
   },
   "kubernetes": {
-    "enabled": true
+    "enabled": true,
+    "managerFilePatterns": [
+      "/^apps/.+\\.ya?ml$/",
+      "/^clusters/.+\\.ya?ml$/"
+    ]
   },
   "packageRules": [
     {
