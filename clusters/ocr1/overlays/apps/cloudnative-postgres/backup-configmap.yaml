@@ -28,8 +28,8 @@ data:
     # Set postgres backup user password for authentication
     export PGPASSWORD="${BACKUP_USER_PASSWORD}"
     
-    # Dump all databases from main-cluster using readonly user
-    if ! pg_dumpall -h main-cluster-rw.cnpg-system.svc.cluster.local -U backup_user | gzip > "$BACKUP_FILE"; then
+    # Dump all databases (excluding cluster-level roles and permissions)
+    if ! pg_dumpall -h main-cluster-rw.cnpg-system.svc.cluster.local -U backup_user --databases | gzip > "$BACKUP_FILE"; then
       echo "[$(date)] ERROR: Failed to dump database"
       send_notification "❌ CNPG Backup Failed\n\nFailed to dump database" "$NOTIFY_URL"
       exit 1
