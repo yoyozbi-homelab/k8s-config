@@ -34,8 +34,19 @@ data:
     BACKUP_SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
     echo "[$(date)] Backup created: $BACKUP_FILE ($BACKUP_SIZE)"
     
+    # Generate rclone config from environment variables
+    mkdir -p ~/.config/rclone
+    cat > ~/.config/rclone/rclone.conf <<EOF
+    [webdav]
+    type = webdav
+    url = $WEBDAV_URL
+    username = $WEBDAV_USERNAME
+    password = $WEBDAV_PASSWORD
+    vendor = other
+    EOF
+    
     # Upload to WebDAV using rclone
-    if ! rclone copy "$BACKUP_FILE" ":webdav:/" --config /etc/rclone/rclone.conf; then
+    if ! rclone copy "$BACKUP_FILE" "webdav:/"; then
       echo "[$(date)] ERROR: Failed to upload backup to WebDAV"
       send_notification "❌ CNPG Backup Failed\n\nFailed to upload to WebDAV" "$NOTIFY_URL"
       exit 1
@@ -46,11 +57,3 @@ data:
     
     echo "[$(date)] Backup job completed successfully"
     exit 0
-  
-  rclone.conf: |
-    [webdav]
-    type = webdav
-    url = $WEBDAV_URL
-    username = $WEBDAV_USERNAME
-    password = $WEBDAV_PASSWORD
-    vendor = other
