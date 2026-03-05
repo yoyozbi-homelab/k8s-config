@@ -35,3 +35,14 @@ spec:
       superuser: false
       passwordSecret:
         name: main-cluster-jellyseerr-secret
+    - name: backup_user
+      ensure: present
+      connectionLimit: 5
+      inherit: true
+      comment: Read-only backup user
+      login: true
+      superuser: false
+      inRoles:
+        - pg_read_all_data
+      passwordSecret:
+        name: main-cluster-backup-user-secret

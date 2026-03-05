@@ -17,7 +17,6 @@ spec:
             args:
             - |
               apk add --no-cache curl rclone
-              chmod +x /scripts/backup.sh
               /scripts/backup.sh
               EXIT_CODE=$?
               if [ $EXIT_CODE -ne 0 ]; then
@@ -45,6 +44,11 @@ spec:
                 secretKeyRef:
                   name: cnpg-backup-config
                   key: ntfy-topic
+            - name: BACKUP_USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: main-cluster-backup-user-secret
+                  key: password
             volumeMounts:
             - name: backup-script
               mountPath: /scripts
