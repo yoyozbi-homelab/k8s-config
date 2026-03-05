@@ -19,6 +19,7 @@ data:
     }
     
     BACKUP_FILE="/tmp/cnpg-main-$(date +%Y%m%d-%H%M%S).sql.gz"
+    BACKUP_FILENAME=$(basename "$BACKUP_FILE")
     WEBDAV_URL="${WEBDAV_URL%/}"
     NOTIFY_URL="$NTFY_TOPIC"
     
@@ -37,26 +38,9 @@ data:
     BACKUP_SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
     echo "[$(date)] Backup created: $BACKUP_FILE ($BACKUP_SIZE)"
     
-    # Generate rclone config from environment variables
-    mkdir -p ~/.config/rclone
-    cat > ~/.config/rclone/rclone.conf <<'RCLONE_CONFIG'
-    [webdav]
-    type = webdav
-    url = $WEBDAV_URL
-    username = $WEBDAV_USERNAME
-    password = $WEBDAV_PASSWORD
-    vendor = other
-    RCLONE_CONFIG
-    
-    # Debug: show config was created
-    if [ ! -s ~/.config/rclone/rclone.conf ]; then
-      echo "[$(date)] ERROR: Failed to create rclone config"
-      send_notification "❌ CNPG Backup Failed\n\nFailed to create rclone config" "$NOTIFY_URL"
-      exit 1
-    fi
-    
-    # Upload to WebDAV using rclone
-    if ! rclone copy "$BACKUP_FILE" "webdav:/"; then
+    # Upload to WebDAV using curl
+    if ! curl -T "$BACKUP_FILE" "$WEBDAV_URL/$BACKUP_FILENAME" \
+         -u "$WEBDAV_USERNAME:$WEBDAV_PASSWORD"; then
       echo "[$(date)] ERROR: Failed to upload backup to WebDAV"
       send_notification "❌ CNPG Backup Failed\n\nFailed to upload to WebDAV" "$NOTIFY_URL"
       exit 1

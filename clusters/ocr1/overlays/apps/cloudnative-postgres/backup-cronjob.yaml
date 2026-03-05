@@ -12,11 +12,11 @@ spec:
           restartPolicy: OnFailure
           containers:
           - name: backup
-            image: postgres:16-alpine
+            image: postgres:18-alpine
             command: ["/bin/sh", "-c"]
             args:
             - |
-              apk add --no-cache curl rclone
+              apk add --no-cache curl
               /scripts/backup.sh
               EXIT_CODE=$?
               if [ $EXIT_CODE -ne 0 ]; then
