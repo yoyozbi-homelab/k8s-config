@@ -37,16 +37,16 @@ data:
     BACKUP_SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
     echo "[$(date)] Backup created: $BACKUP_FILE ($BACKUP_SIZE)"
     
-    # Generate rclone config from environment variables (no leading spaces)
+    # Generate rclone config from environment variables
     mkdir -p ~/.config/rclone
-    cat > ~/.config/rclone/rclone.conf <<'EOF'
-[webdav]
-type = webdav
-url = $WEBDAV_URL
-username = $WEBDAV_USERNAME
-password = $WEBDAV_PASSWORD
-vendor = other
-EOF
+    cat > ~/.config/rclone/rclone.conf <<'RCLONE_CONFIG'
+    [webdav]
+    type = webdav
+    url = $WEBDAV_URL
+    username = $WEBDAV_USERNAME
+    password = $WEBDAV_PASSWORD
+    vendor = other
+    RCLONE_CONFIG
     
     # Debug: show config was created
     if [ ! -s ~/.config/rclone/rclone.conf ]; then
