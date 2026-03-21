@@ -28,7 +28,7 @@ spec:
       # - Each init container must complete successfully before the next one starts.
       containers:
         - name: bookmarks
-          image: ghcr.io/yoyozbi/auto-bookmarks@sha256:985d483439afe9fab0835db05bc35fe1ae060a32bc35e645eb5bcca105e9eb84 #{"$imagescan": "bookmarks-scan"}
+          image: ghcr.io/yoyozbi/auto-bookmarks@sha256:f338ba25810600346b0734cbca0f30beb11f4290052b317e8edb21752d6ae979 #{"$imagescan": "bookmarks-scan"}
           imagePullPolicy: Always
           resources:
             requests:
