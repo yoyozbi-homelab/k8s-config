@@ -50,9 +50,9 @@
   },
   "packageRules": [
     {
-      "description": "Disable minimumReleaseAge for ghcr.io packages (no releaseTimestamp available)",
-      "matchRegistryUrls": ["https://ghcr.io"],
-      "minimumReleaseAge": null
+      "description": "Allow ghcr.io packages without a releaseTimestamp to bypass the minimum release age check",
+      "matchPackagePatterns": ["^ghcr\\.io/"],
+      "minimumReleaseAgeBehaviour": "timestamp-optional"
     },
     {
       "description": "Automatically rebase Renovate's PRs when there are conflicts",
