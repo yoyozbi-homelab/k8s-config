@@ -11,6 +11,7 @@
   "prConcurrentLimit": 10,
   "prCreation": "not-pending",
   "minimumReleaseAge": "3 days",
+  "rebaseWhen": "behind-base-branch",
   "labels": [
     "dependencies",
     "renovate"
@@ -55,16 +56,6 @@
       "matchPackageNames": [
         "/^ghcr\\.io//"
       ]
-    },
-    {
-      "description": "Automatically rebase Renovate's PRs when there are conflicts",
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "digest",
-        "lockFileMaintenance"
-      ],
-      "rebaseWhen": "behind-base-branch"
     },
     {
       "description": "Group all non-major updates",
