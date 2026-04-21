@@ -28,7 +28,7 @@ spec:
           main:
             image:
               repository: vikunja/vikunja
-              tag: 2.1.0
+              tag: 2.3.0
               pullPolicy: IfNotPresent
             ports:
               - name: http
