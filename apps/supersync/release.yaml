@@ -27,8 +27,8 @@ spec:
         containers:
           main:
             image:
-              repository: iari/supersync
-              tag: latest
+              repository: ghcr.io/yoyozbi/images/super-sync
+              tag: v18.2.8
               pullPolicy: IfNotPresent
             ports:
               - name: http
