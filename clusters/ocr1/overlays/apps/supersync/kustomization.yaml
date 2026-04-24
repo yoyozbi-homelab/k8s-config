@@ -1,0 +1,91 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: supersync
+
+bases:
+  - ../../../../../apps/supersync/
+
+resources:
+  - namespace.yaml
+  - pvc.yaml
+  - secrets/db-secret.yaml
+  - secrets/app-secret.yaml
+  - secrets/backup-secret.yaml
+  - backup-configmap.yaml
+  - backup-cronjob.yaml
+
+patches:
+  - target:
+      group: helm.toolkit.fluxcd.io
+      version: v2
+      kind: HelmRelease
+      name: supersync
+    patch: |-
+      - op: replace
+        path: /spec/values/persistence/data/enabled
+        value: true
+      - op: replace
+        path: /spec/values/ingress/main/enabled
+        value: true
+      - op: add
+        path: /spec/values/ingress/main/hosts
+        value:
+          - host: supersync.yohanzbinden.ch
+            paths:
+              - path: /
+                pathType: Prefix
+      - op: add
+        path: /spec/values/controllers/main/containers/main/env
+        value:
+          NODE_ENV: production
+          PORT: "1900"
+          PUBLIC_URL: https://supersync.yohanzbinden.ch
+          CORS_ORIGINS: https://supersync.yohanzbinden.ch
+          WEBAUTHN_RP_ID: supersync.yohanzbinden.ch
+          WEBAUTHN_RP_NAME: Supersync
+          WEBAUTHN_ORIGIN: https://supersync.yohanzbinden.ch
+          DATABASE_URL:
+            valueFrom:
+              secretKeyRef:
+                name: supersync-db-secret
+                key: database-url
+          JWT_SECRET:
+            valueFrom:
+              secretKeyRef:
+                name: supersync-app-secret
+                key: jwt-secret
+          SMTP_HOST:
+            valueFrom:
+              secretKeyRef:
+                name: supersync-app-secret
+                key: smtp-host
+          SMTP_PORT:
+            valueFrom:
+              secretKeyRef:
+                name: supersync-app-secret
+                key: smtp-port
+          SMTP_SECURE:
+            valueFrom:
+              secretKeyRef:
+                name: supersync-app-secret
+                key: smtp-secure
+          SMTP_USER:
+            valueFrom:
+              secretKeyRef:
+                name: supersync-app-secret
+                key: smtp-user
+          SMTP_PASS:
+            valueFrom:
+              secretKeyRef:
+                name: supersync-app-secret
+                key: smtp-pass
+          SMTP_FROM:
+            valueFrom:
+              secretKeyRef:
+                name: supersync-app-secret
+                key: smtp-from
+
+commonLabels:
+  app.kubernetes.io/name: supersync
+  app.kubernetes.io/part-of: supersync

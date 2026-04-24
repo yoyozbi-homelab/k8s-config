@@ -1,0 +1,92 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: bjw-s
+spec:
+  interval: 5m
+  url: https://bjw-s-labs.github.io/helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: supersync
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: app-template
+      version: "4.6.2"
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+  values:
+    controllers:
+      main:
+        type: deployment
+        replicas: 1
+        containers:
+          main:
+            image:
+              repository: iari/supersync
+              tag: latest
+              pullPolicy: IfNotPresent
+            ports:
+              - name: http
+                containerPort: 1900
+                protocol: TCP
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 1900
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 1900
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 3
+              startup:
+                enabled: false
+            resources:
+              requests:
+                cpu: 50m
+                memory: 128Mi
+              limits:
+                cpu: 500m
+                memory: 512Mi
+
+    service:
+      main:
+        enabled: true
+        type: ClusterIP
+        ports:
+          http:
+            enabled: true
+            port: 80
+            targetPort: 1900
+            protocol: TCP
+
+    ingress:
+      main:
+        enabled: false
+        className: "traefik"
+
+    persistence:
+      data:
+        enabled: false
+        type: persistentVolumeClaim
+        existingClaim: supersync-data
+        globalMounts:
+          - path: /app/data

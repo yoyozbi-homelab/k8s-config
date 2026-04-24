@@ -19,6 +19,9 @@ resources:
   - jellyseerr.yaml
   - secrets/jellyseerr-secret.yaml
 
+  - supersync.yaml
+  - secrets/supersync-secret.yaml
+
   - secrets/backup-user-secret.yaml
   - backup-secret.yaml
   - backup-configmap.yaml

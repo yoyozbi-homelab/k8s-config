@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: supersync-backup-script
+data:
+  backup.sh: |
+    #!/bin/bash
+
+    trap 'send_notification "❌ Supersync Data Backup Failed\n\nUnexpected error occurred" $NTFY_TOPIC; exit 1' ERR
+
+    send_notification() {
+      local message="$1"
+      local topic="$2"
+
+      if ! curl -s -X POST -d "$message" "$topic" > /dev/null 2>&1; then
+        echo "[$(date)] ERROR: Failed to send notification to ntfy.sh"
+        exit 1
+      fi
+    }
+
+    BACKUP_FILE="/tmp/supersync-data-$(date +%Y%m%d-%H%M%S).tar.gz"
+    BACKUP_FILENAME=$(basename "$BACKUP_FILE")
+    WEBDAV_URL="${WEBDAV_URL%/}"
+    NOTIFY_URL="$NTFY_TOPIC"
+
+    echo "[$(date)] Starting Supersync data backup..."
+
+    if ! tar -C /data -czf "$BACKUP_FILE" .; then
+      echo "[$(date)] ERROR: Failed to create tarball"
+      send_notification "❌ Supersync Data Backup Failed\n\nFailed to create tarball" "$NOTIFY_URL"
+      exit 1
+    fi
+
+    BACKUP_SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
+    echo "[$(date)] Backup created: $BACKUP_FILE ($BACKUP_SIZE)"
+
+    if ! curl -T "$BACKUP_FILE" "$WEBDAV_URL/$BACKUP_FILENAME" \
+         -u "$WEBDAV_USERNAME:$WEBDAV_PASSWORD"; then
+      echo "[$(date)] ERROR: Failed to upload backup to WebDAV"
+      send_notification "❌ Supersync Data Backup Failed\n\nFailed to upload to WebDAV" "$NOTIFY_URL"
+      exit 1
+    fi
+
+    echo "[$(date)] Backup uploaded successfully"
+    send_notification "✅ Supersync Data Backup Success\n\nPVC: supersync-data\nSize: $BACKUP_SIZE\nTime: $(date)" "$NOTIFY_URL"
+
+    echo "[$(date)] Backup job completed successfully"
+    exit 0

@@ -1,0 +1,70 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: supersync-data-backup
+spec:
+  schedule: "0 2 * * *"  # Daily at 2am
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: backup
+              image: alpine:3.20
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  apk add --no-cache bash curl tar gzip coreutils
+                  /scripts/backup.sh
+                  EXIT_CODE=$?
+                  if [ $EXIT_CODE -ne 0 ]; then
+                    curl -X POST -d "❌ Supersync Data Backup Failed\n\nJob exited with code: $EXIT_CODE" "$NTFY_TOPIC" 2>/dev/null || true
+                  fi
+                  exit $EXIT_CODE
+              env:
+                - name: WEBDAV_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: supersync-backup-config
+                      key: webdav-url
+                - name: WEBDAV_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: supersync-backup-config
+                      key: webdav-username
+                - name: WEBDAV_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: supersync-backup-config
+                      key: webdav-password
+                - name: NTFY_TOPIC
+                  valueFrom:
+                    secretKeyRef:
+                      name: supersync-backup-config
+                      key: ntfy-topic
+              volumeMounts:
+                - name: backup-script
+                  mountPath: /scripts
+                - name: data
+                  mountPath: /data
+                  readOnly: true
+              resources:
+                requests:
+                  memory: "128Mi"
+                  cpu: "50m"
+                limits:
+                  memory: "512Mi"
+                  cpu: "500m"
+          volumes:
+            - name: backup-script
+              configMap:
+                name: supersync-backup-script
+                defaultMode: 0755
+            - name: data
+              persistentVolumeClaim:
+                claimName: supersync-data
+                readOnly: true
