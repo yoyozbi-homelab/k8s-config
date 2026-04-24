@@ -32,6 +32,11 @@ patches:
         path: /spec/values/persistence/config/enabled
         value: true
       - op: add
+        path: /spec/values/defaultPodOptions
+        value:
+          securityContext:
+            fsGroup: 1000
+      - op: add
         path: /spec/values/controllers/main/containers/main/env
         value:
           DB_TYPE: postgres
