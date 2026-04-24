@@ -29,7 +29,7 @@ spec:
             image:
               repository: ghcr.io/yoyozbi/images/super-sync
               tag: v18.2.8
-              pullPolicy: IfNotPresent
+              pullPolicy: Always # TODO: Change to IfNotPresent when image is stable
             ports:
               - name: http
                 containerPort: 1900
