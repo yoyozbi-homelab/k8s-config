@@ -8,8 +8,8 @@ bases:
 
 resources:
   - namespace.yaml
+  - pvc.yaml
   - database-secret.yaml
-  - settings-secret.yaml 
 
 patches:
   - target:
@@ -29,8 +29,8 @@ patches:
               - path: /
                 pathType: Prefix
       - op: replace
-        path: /spec/values/persistence/settings/name
-        value: jellyseerr-settings
+        path: /spec/values/persistence/config/enabled
+        value: true
       - op: add
         path: /spec/values/controllers/main/containers/main/env
         value:

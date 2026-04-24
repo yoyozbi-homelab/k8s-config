@@ -51,25 +51,10 @@ spec:
         className: "traefik"
     
     persistence:
-      cache: 
-        enabled: true
-        type: emptyDir
+      config:
+        enabled: false
+        type: persistentVolumeClaim
+        existingClaim: jellyseerr-config
         globalMounts:
-          - path: /app/config/cache
-      logs: 
-        enabled: true
-        type: emptyDir
-        globalMounts:
-          - path: /app/config/logs
-      settings:
-        enabled: true
-        type: secret
-        name: TO_BE_DEFINED
-        advancedMounts:
-          main:
-            main:
-              - path: /app/config/settings.json
-                readOnly: true
-                mountPropagation: None
-                subPath: settings.json
+          - path: /app/config
 
