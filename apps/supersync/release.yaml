@@ -1,10 +1,12 @@
 apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
+kind: GitRepository
 metadata:
-  name: bjw-s
+  name: super-productivity
 spec:
-  interval: 5m
-  url: https://bjw-s-labs.github.io/helm-charts
+  interval: 1h
+  url: https://github.com/super-productivity/super-productivity
+  ref:
+    tag: v18.2.8
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -14,79 +16,56 @@ spec:
   interval: 5m
   chart:
     spec:
-      chart: app-template
-      version: "4.6.2"
+      chart: packages/super-sync-server/helm/supersync
       sourceRef:
-        kind: HelmRepository
-        name: bjw-s
+        kind: GitRepository
+        name: super-productivity
+  valuesFrom:
+    - kind: Secret
+      name: supersync-db-secret
+      valuesKey: database-url
+      targetPath: externalDatabase.url
+    - kind: Secret
+      name: supersync-app-secret
+      valuesKey: jwt-secret
+      targetPath: supersync.secret.jwtSecret
+    - kind: Secret
+      name: supersync-app-secret
+      valuesKey: smtp-host
+      targetPath: supersync.smtp.host
+    - kind: Secret
+      name: supersync-app-secret
+      valuesKey: smtp-port
+      targetPath: supersync.smtp.port
+    - kind: Secret
+      name: supersync-app-secret
+      valuesKey: smtp-secure
+      targetPath: supersync.smtp.secure
+    - kind: Secret
+      name: supersync-app-secret
+      valuesKey: smtp-from
+      targetPath: supersync.smtp.from
+    - kind: Secret
+      name: supersync-app-secret
+      valuesKey: smtp-user
+      targetPath: supersync.smtp.user
+    - kind: Secret
+      name: supersync-app-secret
+      valuesKey: smtp-pass
+      targetPath: supersync.smtp.password
   values:
-    controllers:
-      main:
-        type: deployment
-        replicas: 1
-        containers:
-          main:
-            image:
-              repository: ghcr.io/yoyozbi/images/super-sync
-              tag: v18.2.8
-              pullPolicy: IfNotPresent
-            ports:
-              - name: http
-                containerPort: 1900
-                protocol: TCP
-            probes:
-              liveness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /health
-                    port: 1900
-                  initialDelaySeconds: 30
-                  periodSeconds: 30
-                  timeoutSeconds: 5
-                  failureThreshold: 3
-              readiness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /health
-                    port: 1900
-                  initialDelaySeconds: 10
-                  periodSeconds: 10
-                  timeoutSeconds: 3
-                  failureThreshold: 3
-              startup:
-                enabled: false
-            resources:
-              requests:
-                cpu: 50m
-                memory: 128Mi
-              limits:
-                cpu: 500m
-                memory: 512Mi
-
-    service:
-      main:
+    image:
+      repository: ghcr.io/yoyozbi/images/super-sync
+      tag: v18.2.8
+    postgresql:
+      enabled: false
+    supersync:
+      smtp:
         enabled: true
-        type: ClusterIP
-        ports:
-          http:
-            enabled: true
-            port: 80
-            targetPort: 1900
-            protocol: TCP
-
+      persistence:
+        enabled: true
+        storageClass: longhorn
+        size: 5Gi
     ingress:
-      main:
-        enabled: false
-        className: "traefik"
-
-    persistence:
-      data:
-        enabled: false
-        type: persistentVolumeClaim
-        existingClaim: supersync-data
-        globalMounts:
-          - path: /app/data
+      enabled: false
+      className: traefik

@@ -66,5 +66,5 @@ spec:
                 defaultMode: 0755
             - name: data
               persistentVolumeClaim:
-                claimName: supersync-data
+                claimName: supersync
                 readOnly: true
