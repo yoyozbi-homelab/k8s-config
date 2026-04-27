@@ -45,6 +45,11 @@ patches:
           WEBAUTHN_RP_ID: supersync.yohanzbinden.ch
           WEBAUTHN_RP_NAME: Supersync
           WEBAUTHN_ORIGIN: https://supersync.yohanzbinden.ch
+          ALLOWED_EMAILS:
+            valueFrom:
+              secretKeyRef:
+                name: supersync-app-secret
+                key: smtp-from
           DATABASE_URL:
             valueFrom:
               secretKeyRef:
