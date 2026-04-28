@@ -17,6 +17,8 @@ spec:
         app.kubernetes.io/name: pollenzo
         app.kubernetes.io/part-of: pollenzo
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: ocr1
       containers:
         - name: pollenzo-api
           image: yoyozbi/pollenzo-api:latest
