@@ -13,12 +13,14 @@ resources:
 
 patches:
   - target:
-      kind: Ingress
-      name: pollenzo-api-ingress
+      group: traefik.io
+      version: v1alpha1
+      kind: IngressRoute
+      name: pollenzo-api-ingressroute
     patch: |-
       - op: replace
-        path: /spec/rules/0/host
-        value: pollenzo.yohanzbinden.ch
+        path: /spec/routes/0/match
+        value: "Host(`pollenzo.yohanzbinden.ch`) && !PathPrefix(`/actuator`)"
 
 commonLabels:
   app.kubernetes.io/name: pollenzo
