@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: activemq
+
+bases:
+  - ../../../../../apps/activemq/
+
+resources:
+  - namespace.yaml
+  - secrets/activemq-secret.yaml
+
+commonLabels:
+  app.kubernetes.io/name: activemq
+  app.kubernetes.io/part-of: activemq

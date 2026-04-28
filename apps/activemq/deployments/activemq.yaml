@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: activemq
+  labels:
+    app.kubernetes.io/name: activemq
+    app.kubernetes.io/part-of: activemq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: activemq
+  template:
+    metadata:
+      labels:
+        app: activemq
+        app.kubernetes.io/name: activemq
+        app.kubernetes.io/part-of: activemq
+    spec:
+      containers:
+        - name: activemq
+          image: apache/activemq-classic:6.1.3
+          ports:
+            - containerPort: 61616
+              name: jms
+            - containerPort: 8161
+              name: webconsole
+          env:
+            - name: ACTIVEMQ_CONNECTION_USER
+              valueFrom:
+                secretKeyRef:
+                  name: activemq-secret
+                  key: username
+            - name: ACTIVEMQ_CONNECTION_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: activemq-secret
+                  key: password
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 256m
+              memory: 512Mi
+          readinessProbe:
+            tcpSocket:
+              port: 61616
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 61616
+            initialDelaySeconds: 30
+            periodSeconds: 20
