@@ -1,0 +1,9 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: main-cluster-pollenzo
+spec:
+  name: pollenzo
+  owner: pollenzo
+  cluster:
+    name: main-cluster

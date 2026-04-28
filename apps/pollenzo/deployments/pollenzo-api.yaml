@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pollenzo-api
+  labels:
+    app.kubernetes.io/name: pollenzo
+    app.kubernetes.io/part-of: pollenzo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pollenzo-api
+  template:
+    metadata:
+      labels:
+        app: pollenzo-api
+        app.kubernetes.io/name: pollenzo
+        app.kubernetes.io/part-of: pollenzo
+    spec:
+      containers:
+        - name: pollenzo-api
+          image: yoyozbi/pollenzo-api:latest
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: SERVER_PORT
+              value: "8080"
+            - name: FETCHER_BASE_URL
+              value: "http://pollenzo-fetcher:8081"
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: pollenzo-db-secret
+                  key: datasource-url
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: pollenzo-db-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pollenzo-db-secret
+                  key: password
+            - name: SPRING_JPA_DATABASE_PLATFORM
+              value: org.hibernate.dialect.PostgreSQLDialect
+            - name: SPRING_ACTIVEMQ_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: pollenzo-secret
+                  key: activemq-broker-url
+            - name: SPRING_ACTIVEMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pollenzo-secret
+                  key: activemq-username
+            - name: SPRING_ACTIVEMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pollenzo-secret
+                  key: activemq-password
+            - name: APP_JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: pollenzo-secret
+                  key: jwt-secret-key
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /api/pollen/stations
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 5
+          livenessProbe:
+            httpGet:
+              path: /api/pollen/stations
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            failureThreshold: 3

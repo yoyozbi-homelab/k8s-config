@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  app.kubernetes.io/name: pollenzo
+  app.kubernetes.io/part-of: pollenzo
+
+resources:
+  - deployments/pollenzo-api.yaml
+  - deployments/pollenzo-fetcher.yaml
+  - services/pollenzo-api.yaml
+  - services/pollenzo-fetcher.yaml
+  - ingresses/pollenzo-api-ingress.yaml

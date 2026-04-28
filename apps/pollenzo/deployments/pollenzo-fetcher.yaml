@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pollenzo-fetcher
+  labels:
+    app.kubernetes.io/name: pollenzo
+    app.kubernetes.io/part-of: pollenzo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pollenzo-fetcher
+  template:
+    metadata:
+      labels:
+        app: pollenzo-fetcher
+        app.kubernetes.io/name: pollenzo
+        app.kubernetes.io/part-of: pollenzo
+    spec:
+      containers:
+        - name: pollenzo-fetcher
+          image: yoyozbi/pollenzo-fetcher:latest
+          ports:
+            - containerPort: 8081
+              name: http
+          env:
+            - name: SERVER_PORT
+              value: "8081"
+            - name: SPRING_ACTIVEMQ_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: pollenzo-secret
+                  key: activemq-broker-url
+            - name: SPRING_ACTIVEMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pollenzo-secret
+                  key: activemq-username
+            - name: SPRING_ACTIVEMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pollenzo-secret
+                  key: activemq-password
+            - name: AIR_QUALITY_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: pollenzo-secret
+                  key: air-quality-token
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+          readinessProbe:
+            tcpSocket:
+              port: 8081
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8081
+            initialDelaySeconds: 40
+            periodSeconds: 20

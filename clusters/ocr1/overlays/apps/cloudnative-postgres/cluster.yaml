@@ -44,6 +44,15 @@ spec:
       superuser: false
       passwordSecret:
         name: main-cluster-supersync-secret
+    - name: pollenzo
+      ensure: present
+      connectionLimit: -1
+      inherit: true
+      comment: Pollenzo role
+      login: true
+      superuser: false
+      passwordSecret:
+        name: main-cluster-pollenzo-secret
     - name: backup_user
       ensure: present
       connectionLimit: 5

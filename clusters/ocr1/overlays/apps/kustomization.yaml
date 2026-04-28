@@ -11,3 +11,5 @@ resources:
   - vikunja
   - dozzle
   - supersync
+  - activemq
+  - pollenzo

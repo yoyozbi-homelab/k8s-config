@@ -22,6 +22,9 @@ resources:
   - supersync.yaml
   - secrets/supersync-secret.yaml
 
+  - pollenzo.yaml
+  - secrets/pollenzo-secret.yaml
+
   - secrets/backup-user-secret.yaml
   - backup-secret.yaml
   - backup-configmap.yaml

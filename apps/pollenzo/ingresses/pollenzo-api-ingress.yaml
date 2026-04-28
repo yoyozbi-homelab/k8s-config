@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pollenzo-api-ingress
+  labels:
+    app.kubernetes.io/name: pollenzo
+    app.kubernetes.io/part-of: pollenzo
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: INGRESS_HOST_PLACEHOLDER
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: pollenzo-api
+                port:
+                  number: 8080
