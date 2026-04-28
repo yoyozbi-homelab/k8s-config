@@ -28,7 +28,7 @@ spec:
       # - Each init container must complete successfully before the next one starts.
       containers:
         - name: bookmarks
-          image: ghcr.io/yoyozbi/auto-bookmarks@v0.2.0
+          image: ghcr.io/yoyozbi/auto-bookmarks:v0.2.0
           imagePullPolicy: Always
           resources:
             requests:
