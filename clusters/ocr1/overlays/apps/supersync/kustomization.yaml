@@ -38,6 +38,7 @@ patches:
       - op: add
         path: /spec/values/controllers/main/containers/main/env
         value:
+          RUN_MIGRATIONS_ON_STARTUP: "true"
           NODE_ENV: production
           PORT: "1900"
           PUBLIC_URL: https://supersync.yohanzbinden.ch
