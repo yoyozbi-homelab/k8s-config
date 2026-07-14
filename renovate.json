@@ -9,7 +9,7 @@
   "commitMessageAction": "update",
   "commitMessageTopic": "{{{depName}}}",
   "prConcurrentLimit": 10,
-  "prCreation": "not-pending",
+  "prCreation": "immediate",
   "minimumReleaseAge": "3 days",
   "rebaseWhen": "behind-base-branch",
   "labels": [
