@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       annotations:
-        kubectl.kubernetes.io/default-container:  lol-deployment
+        kubectl.kubernetes.io/default-container: lol-deployment
       labels:
         app: lol-deployment
     spec:
@@ -26,27 +26,27 @@ spec:
         kubernetes.io/hostname: ocr1 # Since it uses hostPath
 
       # initContainers:
-        # Init containers are exactly like regular containers, except:
-          # - Init containers always run to completion.
-          # - Each init container must complete successfully before the next one starts.
+      # Init containers are exactly like regular containers, except:
+      # - Init containers always run to completion.
+      # - Each init container must complete successfully before the next one starts.
       containers:
-      - name: lol-deployment
-        image: ghcr.io/yoyozbi/niles:v1.1 #{"$imagescan": "niles-scan"}
-        imagePullPolicy: IfNotPresent
-        resources:
-          requests:
-            cpu: 100m
-            memory: 150Mi
-          limits:
-            cpu: 100m
-            memory: 150Mi
-        volumeMounts:
-        - name: config-lol
-          mountPath: /usr/src/niles/config
-        - name: stores-lol
-          mountPath: /usr/src/niles/stores
-        - name: svc
-          mountPath: /svc
+        - name: lol-deployment
+          image: ghcr.io/yoyozbi/niles:v2.2.0
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 100m
+              memory: 150Mi
+            limits:
+              cpu: 100m
+              memory: 150Mi
+          volumeMounts:
+            - name: config-lol
+              mountPath: /usr/src/niles/config
+            - name: stores-lol
+              mountPath: /usr/src/niles/stores
+            - name: svc
+              mountPath: /svc
       volumes:
         - name: stores-lol
           hostPath:
