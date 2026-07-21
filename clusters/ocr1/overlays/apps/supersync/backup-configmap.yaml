@@ -34,7 +34,12 @@ data:
     BACKUP_SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
     echo "[$(date)] Backup created: $BACKUP_FILE ($BACKUP_SIZE)"
 
-    if ! curl -T "$BACKUP_FILE" "$WEBDAV_URL/$BACKUP_FILENAME" \
+    # Ensure destination directory exists (MKCOL is idempotent — 405 means already exists)
+    BASE_URL="${WEBDAV_URL%/*}"
+    curl -s -X MKCOL "${BASE_URL}/backup" -u "$WEBDAV_USERNAME:$WEBDAV_PASSWORD" || true
+    curl -s -X MKCOL "$WEBDAV_URL" -u "$WEBDAV_USERNAME:$WEBDAV_PASSWORD" || true
+
+    if ! curl --fail -s -T "$BACKUP_FILE" "$WEBDAV_URL/$BACKUP_FILENAME" \
          -u "$WEBDAV_USERNAME:$WEBDAV_PASSWORD"; then
       echo "[$(date)] ERROR: Failed to upload backup to WebDAV"
       send_notification "❌ Supersync Data Backup Failed\n\nFailed to upload to WebDAV" "$NOTIFY_URL"
