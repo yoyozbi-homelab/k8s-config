@@ -7,6 +7,9 @@ spec:
     matchLabels:
       app: vaultwarden
   replicas: 1
+  # ReadWriteOnce volume: the old pod must release it before the new one starts
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -70,9 +73,18 @@ spec:
                   key: secret_key
           ports:
             - containerPort: 80
+          # Even with Postgres as the database, vaultwarden keeps the RSA key,
+          # attachments, sends and icon cache on disk under /data
+          volumeMounts:
+            - name: data
+              mountPath: /data
           readinessProbe:
             httpGet:
               path: /
               port: 80
             initialDelaySeconds: 20
             periodSeconds: 3
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: vaultwarden-data
