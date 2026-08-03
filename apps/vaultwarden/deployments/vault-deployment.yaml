@@ -7,9 +7,16 @@ spec:
     matchLabels:
       app: vaultwarden
   replicas: 1
-  # ReadWriteOnce volume: the old pod must release it before the new one starts
+  # ReadWriteOnce volume: maxSurge 0 stops the new pod from overlapping with the
+  # old one, which would deadlock forever on the Longhorn multi-attach.
+  # `type: Recreate` expresses this more directly but cannot be applied over the
+  # existing Deployment: the API server keeps the already-defaulted
+  # spec.strategy.rollingUpdate block, which is Forbidden under Recreate.
   strategy:
-    type: Recreate
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
   template:
     metadata:
       labels:

@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vaultwarden-data
+  labels:
+    app.kubernetes.io/name: vaultwarden
+    app.kubernetes.io/part-of: vaultwarden
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  # Empty class disables dynamic provisioning so this binds statically to the
+  # PVC instead of longhorn handing out a new volume.
+  storageClassName: ""
+  # Keep the data on disk if the PVC is ever deleted - losing rsa_key.pem logs
+  # every user out, and attachments/sends exist nowhere else.
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /data/vaultwarden
+    type: DirectoryOrCreate
+  # ocr1 is multi-node and a hostPath only exists on one host. Without this the
+  # scheduler could place the pod on tiny1/tiny2 and silently serve an empty
+  # /data. Must stay in sync with the Deployment's nodeSelector.
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - ocr1

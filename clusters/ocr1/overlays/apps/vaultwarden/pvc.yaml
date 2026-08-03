@@ -8,7 +8,10 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: longhorn
+  # Static binding to the hostPath PV: empty class opts out of the default
+  # storage class, volumeName pins the exact PV so it cannot bind elsewhere.
+  storageClassName: ""
+  volumeName: vaultwarden-data
   resources:
     requests:
       storage: 2Gi
