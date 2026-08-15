@@ -9,7 +9,7 @@ spec:
     kind: GitRepository
     name: flux-system 
   path: ./clusters/ocr1/overlays/apps
-  prune: false
+  prune: true
   wait: true
   decryption:
     provider: sops
