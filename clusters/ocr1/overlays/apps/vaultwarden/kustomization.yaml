@@ -11,10 +11,9 @@ resources:
   - namespace.yaml
   - pv.yaml
   - pvc.yaml
-  - secrets/admin-secret.yaml
-  - secrets/smtp-secret.yaml
-  - secrets/yubico-secret.yaml
-  - secrets/database-url-secret.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
 
 # Cluster-specific configuration
 configMapGenerator:
@@ -22,28 +21,37 @@ configMapGenerator:
     behavior: merge
     literals:
       - DOMAIN=https://vault.yohanzbinden.ch
-      - SMTP_FROM=yohan@yohanzbinden.ch
+
+secretGenerator:
+  - name: vaultwarden-secrets
+    behavior: merge
+    envs:
+      - secrets/admin.sops.env
+      - secrets/database-url.sops.env
+      - secrets/smtp.sops.env
+      - secrets/yubico.sops.env
 
 # Cluster-specific patches
 patches:
   - target:
-      group: apps
-      version: v1
-      kind: Deployment
+      group: helm.toolkit.fluxcd.io
+      version: v2
+      kind: HelmRelease
       name: vaultwarden
     patch: |-
       - op: replace
-        path: /spec/template/spec/containers/0/resources/limits/memory
-        value: "256M"
+        path: /spec/values/ingress/main/enabled
+        value: true
+      - op: add
+        path: /spec/values/ingress/main/hosts
+        value:
+          - host: vault.yohanzbinden.ch
+            paths:
+              - path: /
+                pathType: Prefix
       - op: replace
-        path: /spec/template/spec/containers/0/resources/limits/cpu
-        value: "200m"
-  - target:
-      group: networking.k8s.io
-      version: v1
-      kind: Ingress
-      name: vaultwarden-ingress
-    patch: |-
+        path: /spec/values/persistence/data/type
+        value: persistentVolumeClaim
       - op: replace
-        path: /spec/rules/0/host
-        value: vault.yohanzbinden.ch
+        path: /spec/values/persistence/data/existingClaim
+        value: vaultwarden-data
