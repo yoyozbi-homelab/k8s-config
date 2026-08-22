@@ -39,10 +39,10 @@ spec:
             periodSeconds: 3
           resources:
             requests:
-              cpu: 100m
+              cpu: 50m
               memory: 200Mi
             limits:
-              cpu: 100m
+              cpu: 300m
               memory: 200Mi
           env:
             - name: HOMEPAGE_ALLOWED_HOSTS

@@ -32,10 +32,10 @@ spec:
           imagePullPolicy: Always
           resources:
             requests:
-              cpu: 100m
+              cpu: 25m
               memory: 200Mi
             limits:
-              cpu: 100m
+              cpu: 200m
               memory: 200Mi
           livenessProbe:
             tcpSocket:

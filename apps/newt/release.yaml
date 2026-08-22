@@ -12,6 +12,16 @@ spec:
         kind: HelmRepository
         name: fossorial
   values:
+    global:
+      resources:
+        requests:
+          cpu: "25m"
+          memory: "128Mi"
+          ephemeral-storage: "128Mi"
+        limits:
+          cpu: "200m"
+          memory: "256Mi"
+          ephemeral-storage: "256Mi"
     newtInstances:
       - name: main-tunnel
         enabled: true
