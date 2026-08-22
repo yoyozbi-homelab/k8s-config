@@ -12,5 +12,4 @@ resources:
   - dozzle
   - supersync
   - activemq
-  - pollenzo
   - newt
