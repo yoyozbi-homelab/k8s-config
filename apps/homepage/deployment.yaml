@@ -37,6 +37,13 @@ spec:
               port: 3000
             initialDelaySeconds: 30
             periodSeconds: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 200Mi
+            limits:
+              cpu: 100m
+              memory: 200Mi
           env:
             - name: HOMEPAGE_ALLOWED_HOSTS
               value: "*" # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
