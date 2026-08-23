@@ -5,11 +5,11 @@ resources:
   - auto-bookmarks
   - homepage
   - jellyseerr
-  - niles
+  #- niles
   - cloudnative-postgres
   - vaultwarden
   - vikunja
-  - dozzle
+  #- dozzle
   - supersync
-  - activemq
+  #- activemq
   - newt
