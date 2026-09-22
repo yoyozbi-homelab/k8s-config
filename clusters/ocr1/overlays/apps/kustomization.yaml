@@ -13,3 +13,4 @@ resources:
   - supersync
   #- activemq
   - newt
+  - wordpress

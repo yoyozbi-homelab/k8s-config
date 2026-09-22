@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wordpress-data
+  labels:
+    app.kubernetes.io/name: wordpress
+    app.kubernetes.io/part-of: wordpress
+spec:
+  accessModes:
+    - ReadWriteOnce
+  # Static binding to the hostPath PV: empty class opts out of the default
+  # storage class, volumeName pins the exact PV so it cannot bind elsewhere.
+  storageClassName: ""
+  volumeName: wordpress-data
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wordpress-db
+  labels:
+    app.kubernetes.io/name: wordpress
+    app.kubernetes.io/part-of: wordpress
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  volumeName: wordpress-db
+  resources:
+    requests:
+      storage: 5Gi

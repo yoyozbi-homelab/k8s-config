@@ -1,0 +1,75 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: wordpress
+
+bases:
+  - ../../../../../apps/wordpress/
+
+resources:
+  - namespace.yaml
+  - pv.yaml
+  - pvc.yaml
+  - secrets/db-secret.yaml
+
+patches:
+  - target:
+      group: helm.toolkit.fluxcd.io
+      version: v2
+      kind: HelmRelease
+      name: wordpress
+    patch: |-
+      - op: replace
+        path: /spec/values/ingress/main/enabled
+        value: true
+      - op: add
+        path: /spec/values/ingress/main/annotations
+        value:
+          traefik.ingress.kubernetes.io/router.entrypoints: web
+      - op: add
+        path: /spec/values/ingress/main/hosts
+        value:
+          - host: teamsolid.ch
+            paths:
+              - path: /
+                pathType: Prefix
+      - op: replace
+        path: /spec/values/persistence/data/type
+        value: persistentVolumeClaim
+      - op: add
+        path: /spec/values/persistence/data/existingClaim
+        value: wordpress-data
+      - op: add
+        path: /spec/values/defaultPodOptions
+        value:
+          nodeSelector:
+            kubernetes.io/hostname: ocr1
+      - op: add
+        path: /spec/values/controllers/main/containers/main/env/WORDPRESS_CONFIG_EXTRA
+        value: |
+          if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+              $_SERVER['HTTPS'] = 'on';
+          }
+          define('WP_HOME', 'https://teamsolid.ch');
+          define('WP_SITEURL', 'https://teamsolid.ch');
+
+  - target:
+      group: helm.toolkit.fluxcd.io
+      version: v2
+      kind: HelmRelease
+      name: mariadb
+    patch: |-
+      - op: replace
+        path: /spec/values/persistence/data/type
+        value: persistentVolumeClaim
+      - op: add
+        path: /spec/values/persistence/data/existingClaim
+        value: wordpress-db
+      - op: add
+        path: /spec/values/defaultPodOptions/nodeSelector
+        value:
+          kubernetes.io/hostname: ocr1
+
+commonLabels:
+  app.kubernetes.io/name: wordpress
+  app.kubernetes.io/part-of: wordpress
