@@ -50,8 +50,16 @@ patches:
           if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
               $_SERVER['HTTPS'] = 'on';
           }
-          define('WP_HOME', 'https://teamsolid.ch');
-          define('WP_SITEURL', 'https://teamsolid.ch');
+          // Derive the site URL from the incoming request rather than pinning it to
+          // teamsolid.ch. Pinned, WordPress bounces every request made on any other
+          // hostname straight back to teamsolid.ch, which makes the site impossible
+          // to install or browse before the domain is mapped. Deriving it means the
+          // site works on whatever host reaches it - a port-forward, a Pangolin
+          // resource - and keeps working unchanged once teamsolid.ch is pointed here.
+          if (!empty($_SERVER['HTTP_HOST'])) {
+              define('WP_HOME', (empty($_SERVER['HTTPS']) ? 'http://' : 'https://') . $_SERVER['HTTP_HOST']);
+              define('WP_SITEURL', WP_HOME);
+          }
 
   - target:
       group: helm.toolkit.fluxcd.io
