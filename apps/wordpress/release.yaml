@@ -80,3 +80,11 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /var/www/html
+      php-config:
+        enabled: true
+        type: configMap
+        name: wordpress-php-config
+        globalMounts:
+          - path: /usr/local/etc/php/conf.d/zz-uploads.ini
+            subPath: zz-uploads.ini
+            readOnly: true
