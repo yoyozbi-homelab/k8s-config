@@ -48,13 +48,39 @@ spec:
               limits:
                 cpu: 500m
                 memory: 1Gi
+            # An exec probe rather than TCP: a TCP check only proves 3306 is
+            # listening, so it reports healthy while mariadb is still refusing
+            # queries - and each bare connect-then-close makes mariadb log
+            # "Aborted connection ... closed normally without authentication",
+            # roughly 12 lines a minute of pure noise. healthcheck.sh ships in
+            # the image and is what the tiny2 docker role already uses.
             probes:
               liveness:
                 enabled: true
-                type: TCP
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - healthcheck.sh
+                      - --connect
+                      - --innodb_initialized
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
               readiness:
                 enabled: true
-                type: TCP
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - healthcheck.sh
+                      - --connect
+                      - --innodb_initialized
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
             env:
               MARIADB_DATABASE: wordpress
               MARIADB_USER: wordpress
