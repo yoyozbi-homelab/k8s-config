@@ -42,15 +42,45 @@ spec:
               limits:
                 cpu: 1000m
                 memory: 1Gi
+            # Probe a 43-byte static asset, not "/".
+            #
+            # "/" is a full Elementor render - the most expensive request on the
+            # site - and the chart defaults timeoutSeconds to 1, which produced
+            # "context deadline exceeded" on this 2-core node. Worse, "/" needs
+            # mariadb, so a database blip returns 500, trips LIVENESS and
+            # restarts apache; while the pod restarts the Service has no
+            # endpoint and traefik answers "no available server". Restarting the
+            # web server does not fix a database outage.
+            #
+            # Liveness should only answer "is this container wedged". With a
+            # single replica, readiness gating on "/" also gains nothing:
+            # dropping the only endpoint turns a WordPress 500 into a traefik
+            # 503, so let WordPress serve its own error and recover when the
+            # database returns. /readme.html is not usable - Solid Security 403s
+            # it - and blank.gif is served by apache without touching PHP.
             probes:
               liveness:
                 enabled: true
-                path: /
-                type: HTTP
+                custom: true
+                spec:
+                  httpGet:
+                    path: /wp-includes/images/blank.gif
+                    port: http
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 6
               readiness:
                 enabled: true
-                path: /
-                type: HTTP
+                custom: true
+                spec:
+                  httpGet:
+                    path: /wp-includes/images/blank.gif
+                    port: http
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
             env:
               WORDPRESS_DB_HOST: mariadb.wordpress.svc.cluster.local
               WORDPRESS_DB_NAME: wordpress
