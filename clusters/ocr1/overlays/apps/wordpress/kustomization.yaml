@@ -50,23 +50,13 @@ patches:
           if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
               $_SERVER['HTTPS'] = 'on';
           }
-          // Follow the host the request arrived on, so a port-forward or any new
-          // hostname works without WordPress redirecting to teamsolid.ch.
-          //
-          // The scheme defaults to https on purpose. Pangolin terminates TLS but
-          // does not pass X-Forwarded-Proto through the newt tunnel, so an absent
-          // header says nothing about how the browser connected - treating it as
-          // plain http rewrote all ~83k stored https:// URLs to http:// and the
-          // browser blocked the images as mixed active content. Only hosts that
-          // genuinely have no certificate (a port-forward, a kubelet probe hitting
-          // the pod IP) get http.
-          if (!empty($_SERVER['HTTP_HOST'])) {
-              $host  = $_SERVER['HTTP_HOST'];
-              $local = preg_match('/^(localhost|127\.0\.0\.1|\[::1\]|\d+\.\d+\.\d+\.\d+)(:\d+)?$/', $host);
-              $scheme = ($local && empty($_SERVER['HTTPS'])) ? 'http' : 'https';
-              define('WP_HOME', $scheme . '://' . $host);
-              define('WP_SITEURL', WP_HOME);
-          }
+          // Pinned, not derived from the request host. The kubelet probe hits the
+          // pod by IP every few seconds, and anything generated during those
+          // requests bakes http://<pod-ip>/ into rendered markup and Elementor's
+          // caches, which the browser then blocks as mixed content. A literal
+          // value is also immune to Host-header spoofing.
+          define('WP_HOME', 'https://teamsolid.ch');
+          define('WP_SITEURL', 'https://teamsolid.ch');
 
   - target:
       group: helm.toolkit.fluxcd.io
