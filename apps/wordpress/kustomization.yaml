@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
   - repository.yaml
   - release.yaml
-  - php-config.yaml
   - mariadb.yaml
 
 commonLabels:

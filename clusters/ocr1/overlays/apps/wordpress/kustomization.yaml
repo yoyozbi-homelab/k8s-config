@@ -50,14 +50,21 @@ patches:
           if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
               $_SERVER['HTTPS'] = 'on';
           }
-          // Derive the site URL from the incoming request rather than pinning it to
-          // teamsolid.ch. Pinned, WordPress bounces every request made on any other
-          // hostname straight back to teamsolid.ch, which makes the site impossible
-          // to install or browse before the domain is mapped. Deriving it means the
-          // site works on whatever host reaches it - a port-forward, a Pangolin
-          // resource - and keeps working unchanged once teamsolid.ch is pointed here.
+          // Follow the host the request arrived on, so a port-forward or any new
+          // hostname works without WordPress redirecting to teamsolid.ch.
+          //
+          // The scheme defaults to https on purpose. Pangolin terminates TLS but
+          // does not pass X-Forwarded-Proto through the newt tunnel, so an absent
+          // header says nothing about how the browser connected - treating it as
+          // plain http rewrote all ~83k stored https:// URLs to http:// and the
+          // browser blocked the images as mixed active content. Only hosts that
+          // genuinely have no certificate (a port-forward, a kubelet probe hitting
+          // the pod IP) get http.
           if (!empty($_SERVER['HTTP_HOST'])) {
-              define('WP_HOME', (empty($_SERVER['HTTPS']) ? 'http://' : 'https://') . $_SERVER['HTTP_HOST']);
+              $host  = $_SERVER['HTTP_HOST'];
+              $local = preg_match('/^(localhost|127\.0\.0\.1|\[::1\]|\d+\.\d+\.\d+\.\d+)(:\d+)?$/', $host);
+              $scheme = ($local && empty($_SERVER['HTTPS'])) ? 'http' : 'https';
+              define('WP_HOME', $scheme . '://' . $host);
               define('WP_SITEURL', WP_HOME);
           }
 
