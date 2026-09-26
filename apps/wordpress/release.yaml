@@ -26,7 +26,10 @@ spec:
           main:
             image:
               repository: wordpress
-              tag: 6.8-apache
+              # Matches the WordPress version the teamsolid.ch backup was taken
+              # from (package.json reports 7.1.2). Restoring that database into
+              # older code means the schema is ahead of the code that reads it.
+              tag: 7.1.2-apache
               pullPolicy: IfNotPresent
             ports:
               - name: http
