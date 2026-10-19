@@ -35,7 +35,7 @@ spec:
           main:
             image:
               repository: mariadb
-              tag: "11.8"
+              tag: "12.2"
               pullPolicy: IfNotPresent
             ports:
               - name: mysql
