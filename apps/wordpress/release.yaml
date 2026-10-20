@@ -7,7 +7,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: "5.2.1"
+      version: "5.3.0"
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -29,7 +29,7 @@ spec:
               # Matches the WordPress version the teamsolid.ch backup was taken
               # from (package.json reports 7.1.2). Restoring that database into
               # older code means the schema is ahead of the code that reads it.
-              tag: 7.1.2-apache
+              tag: 7.1.3-apache
               pullPolicy: IfNotPresent
             ports:
               - name: http
