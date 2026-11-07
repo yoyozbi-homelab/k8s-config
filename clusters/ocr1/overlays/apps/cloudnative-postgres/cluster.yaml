@@ -64,3 +64,12 @@ spec:
         - pg_read_all_data
       passwordSecret:
         name: main-cluster-backup-user-secret
+    - name: uptime_kuma
+      ensure: present
+      connectionLimit: 2
+      inherit: true
+      comment: Uptime Kuma health check (login only, no grants)
+      login: true
+      superuser: false
+      passwordSecret:
+        name: main-cluster-uptime-kuma-secret

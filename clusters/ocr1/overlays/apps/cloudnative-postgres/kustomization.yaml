@@ -26,6 +26,7 @@ resources:
   - secrets/pollenzo-secret.yaml
 
   - secrets/backup-user-secret.yaml
+  - secrets/uptime-kuma-secret.yaml
   - backup-secret.yaml
   - backup-configmap.yaml
   - backup-cronjob.yaml
