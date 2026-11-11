@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Identity for the Uptime Kuma instance on tiny2 (nix-config,
+# hosts/tiny2/services.nix). Uptime Kuma itself doesn't run in the cluster.
+namespace: uptime-kuma
+
+resources:
+  - namespace.yaml
+  - readyz.yaml

@@ -14,3 +14,4 @@ resources:
   #- activemq
   - newt
   - wordpress
+  - uptime-kuma
