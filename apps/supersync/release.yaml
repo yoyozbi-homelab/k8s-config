@@ -28,7 +28,7 @@ spec:
           main:
             image:
               repository: ghcr.io/yoyozbi/images/super-sync
-              tag: v19.1.0
+              tag: v20.0.0
               pullPolicy: Always # TODO: Change to IfNotPresent when image is stable
             ports:
               - name: http
