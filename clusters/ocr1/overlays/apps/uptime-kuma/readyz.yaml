@@ -1,0 +1,33 @@
+# Lets Uptime Kuma call the API server's /readyz, which anonymous requests
+# can't (401). The built-in system:public-info-viewer ClusterRole only allows
+# GET on /healthz, /livez, /readyz and /version: no resource can be read.
+#
+# Copy the token into tiny2's SOPS file as k3s-readyz-token:
+#   kubectl get secret -n uptime-kuma uptime-kuma-readyz \
+#     -o jsonpath='{.data.token}' | base64 -d
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: uptime-kuma-readyz
+---
+# A long-lived token; the API server fills it in.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: uptime-kuma-readyz
+  annotations:
+    kubernetes.io/service-account.name: uptime-kuma-readyz
+type: kubernetes.io/service-account-token
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: uptime-kuma-readyz
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:public-info-viewer
+subjects:
+  - kind: ServiceAccount
+    name: uptime-kuma-readyz
+    namespace: uptime-kuma

@@ -19,6 +19,11 @@ spec:
               apk add --no-cache curl
               /scripts/backup.sh
               EXIT_CODE=$?
+              # Uptime Kuma push monitor: a failed or missing run raises an alert.
+              if [ -n "${KUMA_PUSH_URL:-}" ]; then
+                if [ $EXIT_CODE -eq 0 ]; then STATUS=up; MSG="CNPG backup done"; else STATUS=down; MSG="CNPG backup failed (exit $EXIT_CODE)"; fi
+                curl -fsS --retry 3 -o /dev/null -G --data-urlencode "status=$STATUS" --data-urlencode "msg=$MSG" "$KUMA_PUSH_URL" || echo "Reporting to Uptime Kuma failed"
+              fi
               if [ $EXIT_CODE -ne 0 ]; then
                 curl -X POST -d "❌ CNPG Backup Failed\n\nJob exited with code: $EXIT_CODE" "$NTFY_TOPIC" 2>/dev/null || true
               fi
@@ -39,6 +44,12 @@ spec:
                 secretKeyRef:
                   name: cnpg-backup-config
                   key: webdav-password
+            - name: KUMA_PUSH_URL
+              valueFrom:
+                secretKeyRef:
+                  name: cnpg-backup-config
+                  key: kuma-push-url
+                  optional: true
             - name: NTFY_TOPIC
               valueFrom:
                 secretKeyRef:
